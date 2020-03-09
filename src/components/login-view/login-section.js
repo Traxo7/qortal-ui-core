@@ -93,7 +93,7 @@ class LoginSection extends connect(store)(LitElement) {
             },
             {
                 page: 'seed',
-                linkText: 'Qora seed',
+                linkText: 'Qora address seed',
                 icon: 'clear_all'
             },
             {
@@ -270,7 +270,7 @@ class LoginSection extends connect(store)(LitElement) {
                             <div>
                                 <div style="display:flex;">
                                     <!-- <mwc-icon style="padding: 20px; font-size:24px; padding-left:0; padding-top: 26px;">lock</mwc-icon> -->
-                                    <mwc-textfield style="width:100%;" icon="clear_all" label="Qora seed" id="v1SeedInput" type="password"></mwc-textfield>
+                                    <mwc-textfield style="width:100%;" icon="clear_all" label="Qora address seed" id="v1SeedInput" type="password"></mwc-textfield>
                                     <!-- <paper-input style="width:100%;" label="V1 Seed" id="v1SeedInput" type="password"></paper-input> -->
                                 </div>
                             </div>
