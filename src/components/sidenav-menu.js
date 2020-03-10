@@ -6,7 +6,7 @@ import '@material/mwc-icon'
 import '@polymer/paper-ripple'
 
 class SidenavMenu extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             config: { type: Object },
             urls: { type: Object }// ,
@@ -14,7 +14,7 @@ class SidenavMenu extends connect(store)(LitElement) {
         }
     }
 
-    static get styles () {
+    static get styles() {
         return [
             css`
                 ul#sideNavMenu {
@@ -46,7 +46,7 @@ class SidenavMenu extends connect(store)(LitElement) {
     }
     // .menuItemClick=${() => this.shadowRoot.getElementById('appdrawer').close()}
 
-    render () {
+    render() {
         return html`
             <style>
 
@@ -70,12 +70,11 @@ class SidenavMenu extends connect(store)(LitElement) {
         `
     }
 
-    menuItemClick () {
+    menuItemClick() {
         //
-        console.log('hi')
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         this.config = state.config
         this.urls = state.app.registeredUrls
     }

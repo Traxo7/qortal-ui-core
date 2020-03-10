@@ -35,7 +35,7 @@ const user = {
         primary: {
             domain: '127.0.0.1',
             address: '127.0.0.1', // What the domain should point to
-            port: 12390, // Port to access the Qora UI from
+            port: 12388, // Port to access the Qora UI from
             directory: './src/', // Core Qora-lite code.,
             page404: './src/404.html',
             host: '0.0.0.0' // This probably shouldn't be the default...
