@@ -4,6 +4,9 @@ import { store } from '../store.js'
 // import download from '../api/deps/download.js'
 // import JSZip from 'jszip'
 // import saveAs from 'file-saver/src/FileSaver.js'
+
+// import { Epml } from '../epml'
+
 import FileSaver from 'file-saver'
 import { UPDATE_NAME_STATUSES } from '../redux/user/user-actions.js'
 
@@ -19,11 +22,15 @@ import '@material/mwc-dialog'
 import '@material/mwc-icon-button'
 import '@material/mwc-textfield'
 
+// const parentEpml = new Epml({ type: 'WINDOW', source: window.parent })
+const API_BASE = 'http://localhost:12391'
+
 class WalletProfile extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             loggedIn: { type: Boolean },
             config: { type: Object },
+            qoraBurnedBalance: { type: String },
             user: { type: Object },
             wallet: { type: Object },
             dialog: { type: Object },
@@ -31,7 +38,7 @@ class WalletProfile extends connect(store)(LitElement) {
         }
     }
 
-    static get styles () {
+    static get styles() {
         return [
             css`
                 
@@ -39,14 +46,15 @@ class WalletProfile extends connect(store)(LitElement) {
         ]
     }
 
-    constructor () {
+    constructor() {
         super()
+        this.qoraBurnedBalance = ""
         this.user = {
             accountInfo: {}
         }
     }
 
-    render () {
+    render() {
         return html`
             <style>
                 #profileInMenu {
@@ -103,7 +111,7 @@ class WalletProfile extends connect(store)(LitElement) {
                         <!-- <mwc-icon style="float:right; top: -10px;">keyboard_arrow_down</mwc-icon> -->
                         <mwc-icon-button 
                             style="float:right; top: 0px;"
-                            @click=${() => this.dialog.show()}
+                            @click=${() => this.openModalBox()}
                             icon="info"></mwc-icon-button>
                         <!-- <paper-icon-button
                             
@@ -182,7 +190,7 @@ class WalletProfile extends connect(store)(LitElement) {
                                 <div><span class="">${this.wallet.addresses[0].qoraAddress}</span></div>
                                 <span class="title">Burned Qora amount</span>
                                 <br>
-                                <div><span class="">17 000</span></div>
+                                <div><span class="">${this.qoraBurnedBalance}</span></div>
                             ` : ''}
                             <span class="title">Public key</span>
                             <br>
@@ -215,13 +223,23 @@ class WalletProfile extends connect(store)(LitElement) {
         `
     }
 
-    openSetName () {
+
+    openModalBox() {
+
+        // CAll getBurnedQora
+        this.getBurnedQora(this.wallet.addresses[0].address)
+
+        this.dialog.show()
+
+    }
+
+    openSetName() {
         if (this.name) return
         if (this.setNameInProgress) return
         this.setNameDialog.show()
     }
 
-    _setName () {
+    _setName() {
         this.setNameDialog.close()
         this.dialog.close()
         this.toast.text = 'Name has been set. It may take a few minutes to show.'
@@ -233,7 +251,7 @@ class WalletProfile extends connect(store)(LitElement) {
         }, 5 * 60 * 1000) // 5 minutes
     }
 
-    firstUpdated () {
+    firstUpdated() {
         const container = document.body.querySelector('main-app').shadowRoot.querySelector('app-view').shadowRoot
         const dialogs = this.shadowRoot.getElementById('dialogs')
         this.dialogContainer = container
@@ -253,14 +271,44 @@ class WalletProfile extends connect(store)(LitElement) {
         }
 
         this.toast = container.appendChild(toast)
+
+        // TODO: Make this more like a state thing (This is only a temporary fix.. )
+        // Set Up parentEpml
+        // let configLoaded = false
+        // parentEpml.ready().then(() => {
+        //     parentEpml.subscribe('config', c => {
+        //         if (!configLoaded) {
+        //             setTimeout(() => this.getBurnedQora(), 1)
+        //             configLoaded = true
+        //         }
+        //         this.myConfig = JSON.parse(c)
+        //     })
+        // })
+
+        // parentEpml.imReady()
+
+
     }
 
-    async downloadBackup () {
+    getBurnedQora(address) {
+        console.log("================ GET BURNED QORA =================");
+        // TODO: Might want to use the EPML package for making API calls...
+        fetch(`${API_BASE}/addresses/balance/${address}?assetId=1`).then(res => {
+            // Response is a Readable Stream...
+            return res.json()
+
+        }).then(data => {
+            this.qoraBurnedBalance = data;
+        })
+
+    };
+
+    async downloadBackup() {
         console.log('== DOWNLOAD ==')
         const state = store.getState()
         const password = this.dialogContainer.getElementById('downloadBackupPassword').value
         // const data = state.user.storedWallets[state.app.selectedAddress.address]
-        const data = await state.app.wallet.generateSaveWalletData(password, state.config.crypto.kdfThreads, () => {})
+        const data = await state.app.wallet.generateSaveWalletData(password, state.config.crypto.kdfThreads, () => { })
         // 'application/json' - omit...
         console.log(data)
         const dataString = JSON.stringify(data)
@@ -277,7 +325,7 @@ class WalletProfile extends connect(store)(LitElement) {
         FileSaver.saveAs(blob, `qortal_backup_${state.app.selectedAddress.address}.json`)
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         this.loggedIn = state.app.loggedIn
         this.config = state.config
         this.user = state.user
