@@ -7,6 +7,8 @@ import { store } from '../store.js'
 
 // import { Epml } from '../epml'
 
+// import { request } from '@frag-crypto/crypto'
+
 import FileSaver from 'file-saver'
 import { UPDATE_NAME_STATUSES } from '../redux/user/user-actions.js'
 
@@ -231,6 +233,9 @@ class WalletProfile extends connect(store)(LitElement) {
 
         this.dialog.show()
 
+        // GOing to be using my fetch for now...
+        request()
+
     }
 
     openSetName() {
@@ -293,6 +298,7 @@ class WalletProfile extends connect(store)(LitElement) {
     getBurnedQora(address) {
         console.log("================ GET BURNED QORA =================");
         // TODO: Might want to use the EPML package for making API calls...
+        // UPDATE: Saw this (request) func from qortal-crypto which makes the API calls. And this uses the same pattern as mine below... (only some defined conf which I can set up in here...) 
         fetch(`${API_BASE}/addresses/balance/${address}?assetId=1`).then(res => {
             // Response is a Readable Stream...
             return res.json()
