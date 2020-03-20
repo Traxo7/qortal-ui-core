@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "QORTAL-UI Core",
     "main": "ui-core.js",
-    "repository": "https://github.com/QORT/qortal-ui-core.git",
+    "repository": "https://github.com/Qortal/qortal-ui-core.git",
     "author": "QORTAL <admin@qortal.org>",
     "license": "MIT",
     "scripts": {
