@@ -29,7 +29,6 @@ const createServer = (config, plugins) => {
     return this
 }
 
-// start()
 
 const serverExports = {
     createServer

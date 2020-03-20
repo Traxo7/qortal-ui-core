@@ -36,7 +36,8 @@ export const loginReducer = (state, action) => {
         case 'success':
             return {
                 ...state,
-                wallet: action.payload.wallet,                loggedIn: true,
+                wallet: action.payload.wallet,
+                loggedIn: true,
                 loggingIn: false
             }
         case 'error':

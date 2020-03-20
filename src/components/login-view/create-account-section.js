@@ -104,7 +104,7 @@ class CreateAccountSection extends connect(store)(LitElement) {
                     // Create account and login :)
                     this.createAccountLoading = true
                     const password = this.shadowRoot.getElementById('password').value
-                    console.log(this.shadowRoot.getElementById('password'))
+                    // console.log(this.shadowRoot.getElementById('password'))
 
                     if (this.saveAccount) {
                         if (password === '') {
@@ -153,7 +153,7 @@ class CreateAccountSection extends connect(store)(LitElement) {
                             return ripple.fade()
                                 // Save account after user is logged in...for good UX
                                 .then(() => {
-                                    console.log(this, this.saveAccount)
+                                    // console.log(this, this.saveAccount)
                                     if (!this.saveAccount) return
                                     return store.dispatch(doStoreWallet(wallet, password, '' /* username */, () => {
                                         // console.log('STATUS UPDATE <3')

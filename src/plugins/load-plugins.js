@@ -43,10 +43,12 @@ export const pluginLoader = (plugins, config) => {
             source: insertedFrame.contentWindow
         })
 
+        console.log(epmlInstance)
+
         addPluginRoutes(epmlInstance)
         epmlInstance.imReady()
-        console.log('I\'m ready!')
-        console.log(`${plugin}-plugin`)
+        // console.log('I\'m ready!')
+        // console.log(`${plugin}-plugin`)
         Epml.registerProxyInstance(`${plugin}-plugin`, epmlInstance)
 
         store.dispatch(doAddPlugin(epmlInstance))

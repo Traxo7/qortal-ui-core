@@ -53,13 +53,14 @@ const createPluginRoutes = (config, plugins) => {
             method: 'GET',
             path: '/plugin/{path*}',
             handler: (request, h) => {
+                let port = request.info.host.split(':')[1]
                 const plugin = request.params.path.split('/')[0]
                 const filePath = path.join(pluginFolders[plugin], '../', request.params.path)
-                // console.log(filePath)
+
                 const response = h.file(filePath, {
                     confine: false
                 })
-                response.header('Access-Control-Allow-Origin', config.user.server.plugin.domain + ':' + config.user.server.plugin.port) // Should be
+                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port) // Should be
                 return response
             }
         },
@@ -67,27 +68,36 @@ const createPluginRoutes = (config, plugins) => {
             method: 'GET',
             path: '/plugin/404',
             handler: (request, h) => {
-                return h.file(path.join(config.server.primary.page404))
+                let port = request.info.host.split(':')[1]
+                const response = h.file(path.join(config.server.primary.page404))
+                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port)
+                return response
             }
         },
         {
             method: 'GET',
             path: '/frag-components/plugin-mainjs-loader.html',
             handler: (request, h) => {
-                return h.file(path.join(__dirname, '../../src/plugins/plugin-mainjs-loader.html'), {
+                let port = request.info.host.split(':')[1]
+                const response = h.file(path.join(__dirname, '../../src/plugins/plugin-mainjs-loader.html'), {
                     confine: false
                 })
+                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port)
+                return response
             }
         },
         {
             method: 'GET',
             path: '/frag-components/plugin-mainjs-loader.js',
             handler: (request, h) => {
+                let port = request.info.host.split(':')[1]
                 const file = path.join(config.build.options.outputDir, '/plugins/plugin-mainjs-loader.js')
-                console.log(file)
-                return h.file(file, {
+
+                const response = h.file(file, {
                     confine: false
                 })
+                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port)
+                return response
             }
         }
     )

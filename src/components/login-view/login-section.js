@@ -37,7 +37,7 @@ import ripple from '../../functional-components/loading-ripple.js'
 // const textField = new MDCTextField(document.querySelector('.mdc-text-field'))
 
 class LoginSection extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             nextHidden: { type: Boolean, notify: true },
             nextDisabled: { type: Boolean, notify: true },
@@ -60,7 +60,7 @@ class LoginSection extends connect(store)(LitElement) {
         }
     }
 
-    static get styles () {
+    static get styles() {
         return [
             css`
                 
@@ -68,7 +68,7 @@ class LoginSection extends connect(store)(LitElement) {
         ]
     }
 
-    constructor () {
+    constructor() {
         super()
         this.nextHidden = true
         this.backText = 'Back'
@@ -106,7 +106,7 @@ class LoginSection extends connect(store)(LitElement) {
         this.showPasswordCheckboxPages = ['seed', 'phrase', 'V1Seed', 'unlockBackedUpSeed']
     }
 
-    render () {
+    render() {
         return html`
             <style>
                 #loginSection {
@@ -339,7 +339,7 @@ class LoginSection extends connect(store)(LitElement) {
                 </div>
     */
 
-    firstUpdated () {
+    firstUpdated() {
         // this.loadingRipple = this.shadowRoot.getElementById('loadingRipple')
         this.loadingRipple = ripple // Just cause I'm lazy...
 
@@ -354,31 +354,31 @@ class LoginSection extends connect(store)(LitElement) {
         })
     }
 
-    selectWallet (wallet) {
+    selectWallet(wallet) {
         this.selectedWallet = wallet
         this.selectedPage = 'unlockStored'
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         this.loggedIn = state.app.loggedIn
         this.wallets = state.user.storedWallets
         this.hasStoredWallets = this.wallets.length > 0
     }
 
-    keyupEnter (e, action) {
+    keyupEnter(e, action) {
         if (e.keyCode === 13) {
             e.preventDefault()
             action(e)
         }
     }
 
-    emitNext (e) {
+    emitNext(e) {
         this.dispatchEvent(new CustomEvent('next', {
             detail: {}
         }))
     }
 
-    loadBackup (file) {
+    loadBackup(file) {
         let error = ''
         let pf
         this.selectedPage = 'unlockBackedUpSeed'
@@ -408,7 +408,7 @@ class LoginSection extends connect(store)(LitElement) {
         this.backedUpWalletJSON = pf
     }
 
-    showPassword (selectedPage) {
+    showPassword(selectedPage) {
         return (
             this.saveInBrowser && [
                 'storedWallet',
@@ -417,19 +417,19 @@ class LoginSection extends connect(store)(LitElement) {
                 'phrase'
             ].includes(selectedPage)
         ) ||
-        (
-            [
-                'unlockBackedUpSeed',
-                'unlockStored'
-            ].includes(selectedPage)
-        )
+            (
+                [
+                    'unlockBackedUpSeed',
+                    'unlockStored'
+                ].includes(selectedPage)
+            )
         //  ||
         // (
         //     selectedPage === 'storedWallet' && (this.wallets || {}).length < 1
         // )
     }
 
-    get walletSources () {
+    get walletSources() {
         return {
             seed: () => {
                 const seed = this.shadowRoot.querySelector('#v1SeedInput').value
@@ -459,11 +459,11 @@ class LoginSection extends connect(store)(LitElement) {
         }
     }
 
-    loginOptionIsSelected (type) {
+    loginOptionIsSelected(type) {
         return this.loginOptions.map(op => op.page).includes(type)
     }
 
-    login (e) {
+    login(e) {
         let type = this.selectedPage === 'unlockStored' ? 'storedWallet' : this.selectedPage
         type = type === 'unlockBackedUpSeed' ? 'backedUpSeed' : type
 
@@ -485,19 +485,19 @@ class LoginSection extends connect(store)(LitElement) {
                         store.dispatch(doLogin(wallet))
                         store.dispatch(doSelectAddress(wallet.addresses[0]))
                         this.navigate('show-address')
-                        console.log(wallet)
+                        // console.log(wallet)
                         // store.dispatch(doUpdateAccountInfo({ name: store.getState().user.storedWallets[wallet.addresses[0].address].name }))
                         const storedWallets = store.getState().user.storedWallets
                         const storedWalletAddress = storedWallets[wallet.addresses[0].address]
                         // STORAGEEEE
-                        console.log(storedWalletAddress, this.saveInBrowser, type)
+                        // console.log(storedWalletAddress, this.saveInBrowser, type)
                         if (!storedWalletAddress) {
-                            console.log(' -- Wallet not already stored -- ', this.saveInBrowser)
+                            // console.log(' -- Wallet not already stored -- ', this.saveInBrowser)
                             // const expectedName = storedWallets[wallet.addresses[0].address].name
                             // store.dispatch(doUpdateAccountName(wallet.addresses[0].address, expectedName, false))
                             if (this.saveInBrowser && type !== 'storedWallet') {
                                 //
-                                console.log('==== STORING THE WALLET ====')
+                                // console.log('==== STORING THE WALLET ====')
                                 store.dispatch(doStoreWallet(wallet, source.password, '' /* username */, () => {
                                     // this.loadingRipple.loadingMessage = status
                                     ripple.loadingMessage = status
@@ -515,7 +515,7 @@ class LoginSection extends connect(store)(LitElement) {
             })
     }
 
-    back () {
+    back() {
         if (['seed', 'phrase', 'storedWallet', 'backedUpSeed'].includes(this.selectedPage)) {
             this.selectedPage = 'loginOptions'
         } else if (this.selectedPage === 'loginOptions') {
@@ -527,16 +527,16 @@ class LoginSection extends connect(store)(LitElement) {
         }
     }
 
-    next (e) {
+    next(e) {
         this.login(e)
     }
 
     // clicks next for parent
-    clickNext () {
+    clickNext() {
 
     }
 
-    updateNext () {
+    updateNext() {
         if (['phrase', 'seed', 'unlockStored', 'unlockBackedUpSeed'].includes(this.selectedPage)) {
             this.nextText = 'Login'
             this.nextHidden = false
@@ -549,7 +549,7 @@ class LoginSection extends connect(store)(LitElement) {
         this.updatedProperty()
     }
 
-    updatedProperty () {
+    updatedProperty() {
         this.dispatchEvent(new CustomEvent('updatedProperty', {
             detail: {},
             bubbles: true,
@@ -557,7 +557,7 @@ class LoginSection extends connect(store)(LitElement) {
         }))
     }
 
-    navigate (page) {
+    navigate(page) {
         this.dispatchEvent(new CustomEvent('navigate', {
             detail: { page },
             bubbles: true,
@@ -565,7 +565,7 @@ class LoginSection extends connect(store)(LitElement) {
         }))
     }
 
-    cleanup () {
+    cleanup() {
         this.wallet = {}
         this.shadowRoot.querySelector('#password').value = ''
         this.hasStoredWallets = Object.keys(store.getState().user.storedWallets).length > 0

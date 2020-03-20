@@ -7,7 +7,7 @@ const Inert = require('inert') // For serving static files
 // const h2o2 = require('h2o2') // Proxy
 // const Nes = require('nes') Future, would be cool to work with qora for ws
 
-function serverFactory (routes, address, port, tls) {
+function serverFactory(routes, address, port, tls) {
     this.server = new Hapi.Server({
         routes: {
             files: {

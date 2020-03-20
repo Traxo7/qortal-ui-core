@@ -231,10 +231,10 @@ class WalletProfile extends connect(store)(LitElement) {
         // CAll getBurnedQora
         this.getBurnedQora(this.wallet.addresses[0].address)
 
-        this.dialog.show()
+        // this.dialog.show()
 
         // GOing to be using my fetch for now...
-        request()
+        // request()
 
     }
 
@@ -305,6 +305,7 @@ class WalletProfile extends connect(store)(LitElement) {
 
         }).then(data => {
             this.qoraBurnedBalance = data;
+            this.dialog.show()
         })
 
     };

@@ -8,6 +8,8 @@ const createCommonRoutes = require('./createCommonRoutes.js')
 // const saveEmail = require('./saveEmail.js') // Nah fam we decentralized
 // const config = require('../../config/config-loader.js')
 
+// THOUGHTS: Make all the routes support production and dev
+
 const createPrimaryRoutes = (config, plugins) => {
     const routes = createCommonRoutes(config)
     routes.push(
@@ -15,29 +17,21 @@ const createPrimaryRoutes = (config, plugins) => {
             method: 'GET',
             path: '/',
             handler: (request, reply) => {
-                return reply.redirect('/q/wallet/')
+                return reply.redirect('/app')
             }
         },
         {
             method: 'GET',
             path: '/{path*}',
-            handler: {
-                file: {
-                    path: path.join(__dirname, '../../public/index.html'),
-                    confine: path.join(__dirname, '../../public/')
-                }
-                // file: path.join(__dirname, "../../build/src/index.html") // Production...maybe
-            }
-        },
-        {
-            method: 'GET',
-            path: '/favicon.ico',
-            handler: {
-                file: {
-                    path: path.join(__dirname, '../../favicon.ico'),
-                    confine: path.join(__dirname, '../../')
-                }
-                // file: path.join(__dirname, "../../build/src/index.html") // Production
+            // Make this support production and dev...
+            handler: (request, h) => {
+                let port = request.info.host.split(':')[1]
+                const filePath = path.join(__dirname, '../../public/index.html')
+                const response = h.file(filePath, {
+                    confine: true
+                })
+                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port)
+                return response
             }
         },
         {
@@ -45,7 +39,7 @@ const createPrimaryRoutes = (config, plugins) => {
             path: '/getPlugins',
             handler: (request, h) => {
                 // pluginLoader.loadPlugins()
-                console.log(plugins)
+                // console.log(plugins)
                 return { plugins: plugins.map(p => p.name) }
             }
         },
