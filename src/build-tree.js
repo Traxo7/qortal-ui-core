@@ -9,8 +9,8 @@ const path = require('path')
 
 // Could be used to overwrite absolutely anything
 const aliases = {
-    // '@frag/crypto': 'node_modules/frag-qora-crypto/api.js'
-    '@frag-crypto/crypto': 'node_modules/frag-qora-crypto'
+    // '@frag/crypto': 'node_modules/qortal-ui-crypto/api.js'
+    'qortal-ui-crypto': 'node_modules/qortal-ui-crypto'
 }
 
 const apiComponents = {
@@ -107,7 +107,7 @@ const componentTree = {
 // import './login-section.js'
 
 // So that the directory rollup is running in doesn't matter as the paths aren't relative
-function addPathToSource (tree) {
+function addPathToSource(tree) {
     for (const component of Object.values(tree)) {
         // console.log(component)
         component.source = path.join(__dirname, component.file)

@@ -2,13 +2,13 @@ import { store } from '../store.js'
 import { doAddPluginUrl } from '../redux/app/app-actions.js'
 // import * as api from '../qora/api.js'
 // import * as api from '../api/api.js'
-import * as api from '@frag-crypto/crypto'
+import * as api from 'qortal-ui-crypto'
 import { requestTransactionDialog } from '../functional-components/confirm-transaction-dialog.js'
 
 const createTransaction = api.createTransaction
 const processTransaction = api.processTransaction
 // import { createTransaction } from '../api/createTransaction.js'
-// import { createTransaction } from '@frag-crypto/crypto'
+// import { createTransaction } from 'qortal-ui-crypto'
 
 export const routes = {
     hello: async req => {

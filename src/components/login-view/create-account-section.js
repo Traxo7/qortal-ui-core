@@ -5,12 +5,12 @@ import { store } from '../../store.js'
 // import { createWallet } from '../../../qora/createWallet.js'
 // import { createWallet } from '../../qora/createWallet.js'
 // import { createWallet } from '../../api/createWallet.js'
-import { createWallet } from '@frag-crypto/crypto'
+import { createWallet } from 'qortal-ui-crypto'
 
 import { doLogin, doLogout, doSelectAddress } from '../../redux/app/app-actions.js'
 import { doStoreWallet } from '../../redux/user/user-actions.js'
 // import { registerUsername } from '../../api/registerUsername.js'
-// import { registerUsername } from 'frag-qora-crypto'
+// import { registerUsername } from 'qortal-ui-crypto'
 
 import snackbar from '../../functional-components/snackbar.js'
 

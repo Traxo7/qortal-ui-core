@@ -1,4 +1,4 @@
-// This will be moved to frag-qora-crypto
+// This will be moved to qortal-ui-crypto
 
 // import { Epml, EpmlWorkerPlugin } from 'epml/src/epml.all.js'
 import { Epml, EpmlReadyPlugin, RequestPlugin, EpmlWorkerPlugin } from 'epml'

@@ -7,7 +7,7 @@ import { store } from '../store.js'
 
 // import { Epml } from '../epml'
 
-// import { request } from '@frag-crypto/crypto'
+// import { request } from 'qortal-ui-crypto'
 
 import FileSaver from 'file-saver'
 import { UPDATE_NAME_STATUSES } from '../redux/user/user-actions.js'

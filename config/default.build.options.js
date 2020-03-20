@@ -16,8 +16,8 @@ const options = {
 }
 
 const aliases = {
-    '@frag-crypto/crypto': 'node_modules/frag-qora-crypto/api.js'
-    // '@frag/crypto': path.join(__dirname, '../node_modules/frag-qora-crypto/')
+    'qortal-ui-crypto': 'node_modules/qortal-ui-crypto/api.js'
+    // '@frag/crypto': path.join(__dirname, '../node_modules/qortal-ui-crypto/')
 }
 
 const apiComponents = {
@@ -73,7 +73,7 @@ const inlineComponents = [
 // This is the actual app structure. Each component is given access to itself I guess, after being loaded via dynamic import or systemjs
 // Give every component an onLoaded method that is called once it's imported so that it can import it's own dependencies. Is passed it's children.
 const elementComponents = {
-    // This should be in the frag-qora-crypto thing
+    // This should be in the qortal-ui-crypto thing
     'main-app': {
         file: 'components/main-app.js',
         className: 'MainApp',

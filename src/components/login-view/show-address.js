@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element'
 import { connect } from 'pwa-helpers'
 import { store } from '../../store.js'
-import { Base58 } from '@frag-crypto/crypto'
+import { Base58 } from 'qortal-ui-crypto'
 
 import '@material/mwc-button'
 import '@material/mwc-icon'
@@ -9,7 +9,7 @@ import '@material/mwc-icon'
 import FileSaver from 'file-saver'
 
 class ShowAddress extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             nextHidden: { type: Boolean, notify: true },
             nextEnabled: { type: Boolean, notify: true },
@@ -18,13 +18,13 @@ class ShowAddress extends connect(store)(LitElement) {
             backDisabled: { type: Boolean, notify: true },
             backText: { type: String, notify: true },
             hideNav: { type: Boolean, notify: true },
-            wallet: { },
-            user: { },
-            pubicKey: { }
+            wallet: {},
+            user: {},
+            pubicKey: {}
         }
     }
 
-    constructor () {
+    constructor() {
         super()
         this.hideNav = true
         this.user = {
@@ -33,15 +33,15 @@ class ShowAddress extends connect(store)(LitElement) {
         this.pubicKey = ''
     }
 
-    updatePublicKey () {
+    updatePublicKey() {
         this.pubicKey = Base58.encode(this.wallet.addresses[0].keyPair.publicKey)
     }
 
-    firstUpdate () {
+    firstUpdate() {
         // ...
     }
 
-    static get styles () {
+    static get styles() {
         return [
             css`
                 h3 {
@@ -66,7 +66,7 @@ class ShowAddress extends connect(store)(LitElement) {
         ]
     }
 
-    render () {
+    render() {
         return html`
             <div>
                 <h3> Welcome to your Qortal account </h3>
@@ -81,11 +81,11 @@ class ShowAddress extends connect(store)(LitElement) {
         `
     }
 
-    back () { }
+    back() { }
 
-    next () { }
+    next() { }
 
-    navigate (page) {
+    navigate(page) {
         this.dispatchEvent(new CustomEvent('navigate', {
             detail: { page },
             bubbles: true,
@@ -93,7 +93,7 @@ class ShowAddress extends connect(store)(LitElement) {
         }))
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         this.loggedIn = state.app.loggedIn
         this.config = state.config
         this.user = state.user
@@ -102,7 +102,7 @@ class ShowAddress extends connect(store)(LitElement) {
         if (state.app.wallet.addresses) console.log(state.app.wallet.addresses[0].address)
     }
 
-    download () {
+    download() {
         const state = store.getState()
         const data = state.user.storedWallets[state.app.selectedAddress.address]
         // 'application/json' - omit...

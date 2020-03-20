@@ -1,10 +1,10 @@
 {
-    "name": "@frag-crypto/frag-core",
-    "version": "0.0.6",
-    "description": "Core component of a frag ui",
-    "main": "frag-core.js",
-    "repository": "https://github.com/frag-crypto/frag-core.git",
-    "author": "irontiga <irontiga@gmail.com>",
+    "name": "qortal-ui-core",
+    "version": "1.0.0",
+    "description": "QORTAL-UI Core",
+    "main": "ui-core.js",
+    "repository": "https://github.com/QORT/qortal-ui-core.git",
+    "author": "QORTAL <admin@qortal.org>",
     "license": "MIT",
     "scripts": {
         "buildd": "cross-env NODE_ENV=production rollup -c",
