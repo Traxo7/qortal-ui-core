@@ -34,6 +34,22 @@
             padding: 0;
             background: #eee;
         }
+
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 200px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            z-index: 99999999;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
     <link rel="stylesheet" href="/build/styles.bundle.css">
     <link rel="stylesheet" href="/font/material-icons.css">
@@ -64,12 +80,53 @@
     <!-- styles all dialogs etc too -->
     <app-styles></app-styles>
     <main>
+
+        <!-- APP VERSION -->
+        <h1 id="version"></h1>
+
         <noscript>
             You need to enable JavaScript to run this app. 😞
         </noscript>
 
         <main-app id="main-app"></main-app>
+
+        <div id="notification" class="hidden">
+            <p id="message"></p>
+            <button id="close-button" onClick="closeNotification()">
+                Close
+            </button>
+        </div>
     </main>
+
+
+    <!-- APP RELATED... -->
+    <!-- <script src="./renderer.js"></script> -->
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        const version = document.getElementById('version');
+        const notification = document.getElementById('notification');
+        const message = document.getElementById('message');
+
+        ipcRenderer.send('app_version');
+        ipcRenderer.on('app_version', (event, arg) => {
+            ipcRenderer.removeAllListeners('app_version');
+            version.innerText = 'Version ' + arg.version;
+        });
+
+        ipcRenderer.on('message', function (event, text) {
+            message.innerText = text
+            console.log('Message from updater:', text);
+            alert(text)
+        });
+
+        function closeNotification() {
+            notification.classList.add('hidden');
+        }
+
+    </script>
+
+
 
     <!-- Polyfill stuff -->
     <script>
