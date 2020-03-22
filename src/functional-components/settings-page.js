@@ -16,19 +16,19 @@ import '@material/mwc-list/mwc-list-item.js'
 let settingsDialog
 
 class SettingsPage extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             lastSelected: { type: Number }
         }
     }
 
-    static get styles () {
+    static get styles() {
         return css`
             
         `
     }
 
-    render () {
+    render() {
         return html`
             <style>
                 
@@ -77,15 +77,15 @@ class SettingsPage extends connect(store)(LitElement) {
         `
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         this.config = state.config
     }
 
-    show () {
+    show() {
         this.shadowRoot.getElementById('settingsDialog').show()
     }
 
-    nodeSelected (e) {
+    nodeSelected(e) {
         console.log('Node selected', e)
         const selectedNode = this.shadowRoot.getElementById('nodeSelect').value
         if (selectedNode === 'add') {
@@ -98,7 +98,7 @@ class SettingsPage extends connect(store)(LitElement) {
         // Set selected node
     }
 
-    addNode () {
+    addNode() {
 
     }
 }

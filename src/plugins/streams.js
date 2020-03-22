@@ -33,7 +33,7 @@ store.subscribe(() => {
         configStream.emit(state.config)
     }
     if (oldState.app.selectedAddress !== state.app.selectedAddress) {
-        console.log('Selected address changed')
+        // console.log('Selected address changed')
         // selectedAddressStream.emit(state.selectedAddress)
         selectedAddressStream.emit({
             address: state.app.selectedAddress.address,

@@ -10,9 +10,9 @@ let retryLoadPluginsInterval = 0
 export const loadPlugins = () => fetch('/getPlugins')
     .then(response => response.json())
     .then(response => {
-        console.log(response)
+        // console.log(response)
         const plugins = response.plugins
-        console.log(plugins)
+        // console.log(plugins)
         const config = store.getState().config
         // console.log(config)
         pluginLoader(plugins, config)
@@ -43,7 +43,7 @@ export const pluginLoader = (plugins, config) => {
             source: insertedFrame.contentWindow
         })
 
-        console.log(epmlInstance)
+        // console.log(epmlInstance)
 
         addPluginRoutes(epmlInstance)
         epmlInstance.imReady()

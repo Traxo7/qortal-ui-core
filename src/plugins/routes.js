@@ -74,10 +74,10 @@ export const routes = {
         try {
             // const txBytes = createTransaction(req.data.type, store.getState().app.wallet._addresses[req.data.nonce].keyPair, req.data.params)
             const tx = createTransaction(req.data.type, store.getState().app.wallet._addresses[req.data.nonce].keyPair, req.data.params)
-            console.log(api, tx, tx.signedBytes)
+            // console.log(api, tx, tx.signedBytes)
             await requestTransactionDialog.requestTransaction(tx)
             const res = await processTransaction(tx.signedBytes)
-            console.log(res)
+            // console.log(res)
             response = {
                 success: true,
                 data: res
@@ -95,9 +95,9 @@ export const routes = {
 
     username: async req => {
         const state = store.getState()
-        console.log(state.app.wallet.addresses[0].address, state.user.storedWallets)
+        // console.log(state.app.wallet.addresses[0].address, state.user.storedWallets)
         const username = state.user.storedWallets[state.app.wallet.addresses[0].address].name
-        console.log(username)
+        // console.log(username)
         return username
     }
 }

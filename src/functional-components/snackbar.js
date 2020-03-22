@@ -4,7 +4,7 @@ import '@material/mwc-snackbar'
 let queueElement
 
 class SnackQueue extends LitElement {
-    static get properties () {
+    static get properties() {
         return {
             busy: {
                 type: Boolean,
@@ -31,18 +31,18 @@ class SnackQueue extends LitElement {
         }
     }
 
-    static get styles () {
+    static get styles() {
         return css``
     }
 
-    constructor () {
+    constructor() {
         super()
         this._queue = []
         this.busy = false
         this._timeoutMs = 5000
     }
 
-    render () {
+    render() {
         return html`
             <mwc-snackbar id="snack" labelText="${this._labelText}" ?stacked=${this._stacked} ?leading=${this._leading} ?closeOnEscape=${this._closeOnEscape} timeoutMs=${this._timeoutMs}>
                 ${this._action}
@@ -53,11 +53,11 @@ class SnackQueue extends LitElement {
         `
     }
 
-    firstUpdated () {
+    firstUpdated() {
         this._snackbar = this.shadowRoot.getElementById('snack')
     }
 
-    _shift () {
+    _shift() {
         if (this.busy || this._queue.length === 0) return
         const item = this._queue.shift()
         this._labelText = item.labelText || ''
@@ -67,11 +67,11 @@ class SnackQueue extends LitElement {
         this._leading = !!item.leading
         this._closeOnEscape = (item.closeOnEscape && item.closeOnEscape !== false) // JSON.parse maybe needs to be compared to 'false'...in which case no need for complex expression
         this._timeoutMs = (item.timeoutMs >= 4000 && item.timeoutMs <= 10000) ? item.timeoutMs : 5000
-        console.log(this._snackbar)
+        // console.log(this._snackbar)
         this._snackbar.open()
     }
 
-    add (item) {
+    add(item) {
         this._queue.push(item)
         this._shift()
     }

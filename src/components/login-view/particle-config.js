@@ -1,6 +1,6 @@
 export default config => {
-    console.log(config)
-    console.log('=====================================')
+    // console.log(config)
+    // console.log('=====================================')
     return {
         particles: {
             number: {

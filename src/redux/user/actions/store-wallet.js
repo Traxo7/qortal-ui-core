@@ -9,7 +9,7 @@ export const doStoreWallet = (wallet, password, name, statusUpdateFn = () => { }
     return (dispatch, getState) => {
         // return generateSaveWalletData(wallet, password, getState().config.crypto.kdfThreads, statusUpdateFn).then(data => {
         return wallet.generateSaveWalletData(password, getState().config.crypto.kdfThreads, statusUpdateFn).then(data => {
-            console.log(data)
+            // console.log(data)
             dispatch(storeWallet({
                 ...data,
                 name

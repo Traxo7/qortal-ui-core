@@ -9,13 +9,13 @@ import '@polymer/paper-dialog/paper-dialog.js'
 import '@material/mwc-button'
 
 class ConfirmTransactionDialog extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             txInfo: { type: Object }
         }
     }
 
-    static get styles () {
+    static get styles() {
         return css`
             .decline {
                 --mdc-theme-primary: var(--mdc-theme-error)
@@ -36,7 +36,7 @@ class ConfirmTransactionDialog extends connect(store)(LitElement) {
         `
     }
 
-    constructor () {
+    constructor() {
         super()
         this.transaction = {
             template: html`Awaiting transaction info`
@@ -45,7 +45,7 @@ class ConfirmTransactionDialog extends connect(store)(LitElement) {
         listenForRequest(args => this.requestTransaction(args))
     }
 
-    render () {
+    render() {
         return html`
             <style>
                 
@@ -64,28 +64,28 @@ class ConfirmTransactionDialog extends connect(store)(LitElement) {
         `
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         this.loggedIn = state.app.loggedIn
     }
 
-    requestTransaction (transaction) {
+    requestTransaction(transaction) {
         this.shadowRoot.getElementById('james').open()
         this.transaction = transaction
         this.txInfo = transaction.render(html)
-        console.log(this.txInfo)
+        // console.log(this.txInfo)
         return new Promise((resolve, reject) => {
             this._resolve = resolve
             this._reject = reject
         })
     }
 
-    confirm (e) {
+    confirm(e) {
         this._resolve({
             success: true
         })
     }
 
-    decline (e) {
+    decline(e) {
         // this._resolve({
         //     success: false,
         //     reason: 'User declined transaction'

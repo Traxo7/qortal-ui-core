@@ -4,7 +4,7 @@ import '@material/mwc-button'
 import '@material/mwc-icon'
 
 class FragFileInput extends LitElement {
-    static get properties () {
+    static get properties() {
         return {
             accept: {
                 type: String
@@ -15,7 +15,7 @@ class FragFileInput extends LitElement {
         }
     }
 
-    static get styles () {
+    static get styles() {
         return css`
             #drop-area {
                 border: 2px dashed #ccc;
@@ -40,12 +40,12 @@ class FragFileInput extends LitElement {
         `
     }
 
-    constructor () {
+    constructor() {
         super()
         this.readAs = this.readAs || 'Text'
     }
 
-    render () {
+    render() {
         return html`
             <style>
                 
@@ -68,7 +68,7 @@ class FragFileInput extends LitElement {
         `
     }
 
-    readFile (file) {
+    readFile(file) {
         const fr = new FileReader()
 
         fr.onload = () => {
@@ -82,18 +82,18 @@ class FragFileInput extends LitElement {
         fr['readAs' + this.readAs](file)
     }
 
-    firstUpdated () {
+    firstUpdated() {
         this._dropArea = this.shadowRoot.getElementById('drop-area')
-        console.log(this._dropArea)
+        // console.log(this._dropArea)
 
         const preventDefaults = e => {
             e.preventDefault()
             e.stopPropagation()
         }
 
-        ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            this._dropArea.addEventListener(eventName, preventDefaults, false)
-        })
+            ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                this._dropArea.addEventListener(eventName, preventDefaults, false)
+            })
 
         const highlight = e => {
             this._dropArea.classList.add('highlight')
@@ -103,18 +103,18 @@ class FragFileInput extends LitElement {
             this._dropArea.classList.remove('highlight')
         }
 
-        ;['dragenter', 'dragover'].forEach(eventName => {
-            console.log('dragenter/dragover')
-            this._dropArea.addEventListener(eventName, highlight, false)
-        })
+            ;['dragenter', 'dragover'].forEach(eventName => {
+                // console.log('dragenter/dragover')
+                this._dropArea.addEventListener(eventName, highlight, false)
+            })
 
-        ;['dragleave', 'drop'].forEach(eventName => {
-            console.log('drag-leave/drop')
-            this._dropArea.addEventListener(eventName, unhighlight, false)
-        })
+            ;['dragleave', 'drop'].forEach(eventName => {
+                // console.log('drag-leave/drop')
+                this._dropArea.addEventListener(eventName, unhighlight, false)
+            })
 
         this._dropArea.addEventListener('drop', e => {
-            console.log('DROPPED')
+            // console.log('DROPPED')
             const dt = e.dataTransfer
             const file = dt.files[0]
 

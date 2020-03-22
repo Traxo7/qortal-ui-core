@@ -4,7 +4,7 @@ import { LitElement, html } from 'lit-element'
 import Typed from 'typed.js'
 
 export class TypedJS extends LitElement {
-    static get properties () {
+    static get properties() {
         return {
             strings: { type: String },
             stringsElement: { type: String },
@@ -28,7 +28,7 @@ export class TypedJS extends LitElement {
         }
     }
 
-    render () {
+    render() {
         this.typed = new Typed(this.querySelector('.typing'), {
             strings: this.strings.split(',') || '',
             stringsElement: this.stristringsElementngs || null,
@@ -59,7 +59,7 @@ export class TypedJS extends LitElement {
             }
         })
 
-        console.log(this.typed)
+        // console.log(this.typed)
 
         return html`
             <slot></slot>

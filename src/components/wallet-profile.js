@@ -261,7 +261,7 @@ class WalletProfile extends connect(store)(LitElement) {
         const dialogs = this.shadowRoot.getElementById('dialogs')
         this.dialogContainer = container
         container.appendChild(dialogs)
-        console.log(container)
+        // console.log(container)
         // const setNameDialog = this.shadowRoot.getElementById('setNameDialog')
         this.dialog = container.getElementById('profileDialog')
         this.setNameDialog = container.getElementById('setNameDialog')
@@ -317,10 +317,10 @@ class WalletProfile extends connect(store)(LitElement) {
         // const data = state.user.storedWallets[state.app.selectedAddress.address]
         const data = await state.app.wallet.generateSaveWalletData(password, state.config.crypto.kdfThreads, () => { })
         // 'application/json' - omit...
-        console.log(data)
+        // console.log(data)
         const dataString = JSON.stringify(data)
         // return download(dataString, 'karma_backup.json')
-        console.log(dataString)
+        // console.log(dataString)
         // const zip = new JSZip()
         // zip.file(state.app.selectedAddress.address + '.json', dataString)
 

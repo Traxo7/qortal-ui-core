@@ -5,7 +5,7 @@ const TRANSITION_EVENT_NAMES = ['transitionend', 'webkitTransitionEnd', 'oTransi
 let rippleElement
 
 class LoadingRipple extends LitElement {
-    static get properties () {
+    static get properties() {
         return {
             welcomeMessage: {
                 type: String,
@@ -20,13 +20,13 @@ class LoadingRipple extends LitElement {
         }
     }
 
-    constructor () {
+    constructor() {
         super()
         this.welcomeMessage = ''
         this.loadingMessage = ''
     }
 
-    static get styles () {
+    static get styles() {
         return css`
             * {
                 --paper-spinner-color: var(--mdc-theme-secondary);
@@ -101,7 +101,7 @@ class LoadingRipple extends LitElement {
         `
     }
 
-    render () {
+    render() {
         return html`
         <div id="rippleWrapper">
             <div id="ripple">
@@ -118,14 +118,14 @@ class LoadingRipple extends LitElement {
         `
     }
 
-    firstUpdated () {
+    firstUpdated() {
         this._rippleWrapper = this.shadowRoot.getElementById('rippleWrapper')
         this._ripple = this.shadowRoot.getElementById('ripple')
         this._rippleContentWrapper = this.shadowRoot.getElementById('rippleContentWrapper')
     }
 
     // duh
-    open (origin) {
+    open(origin) {
         this._rippleWrapper.style.top = origin.y + 'px'
         this._rippleWrapper.style.left = origin.x + 'px'
         this._rippleContentWrapper.style.marginTop = -origin.y + 'px'
@@ -147,7 +147,7 @@ class LoadingRipple extends LitElement {
     }
 
     // Fades out
-    fade () {
+    fade() {
         return new Promise((resolve, reject) => {
             // CAN'T FADE OUT CAUSE THE STUPID THING GETS KILLED CAUSE OF STATE.APP.LOGGEEDIN
             // let rippleClosed = false
@@ -159,7 +159,7 @@ class LoadingRipple extends LitElement {
     }
 
     // un-ripples...
-    close () {
+    close() {
         return new Promise((resolve, reject) => {
             let rippleClosed = false
             this._ripple.classList.add('error')
@@ -178,7 +178,7 @@ class LoadingRipple extends LitElement {
         })
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         // this.loggedIn = state.app.loggedIn
     }
 }
@@ -193,7 +193,7 @@ setTimeout(() => {
     const ripple = document.getElementById('ripple-node')
     const mainApp = document.getElementById('main-app')
     const shadow = mainApp.shadowRoot
-    console.log(shadow)
+    // console.log(shadow)
     rippleElement = shadow.appendChild(ripple)
 }, 500) // Should just keep checking for the main-app and it's shadow and then append once it's there
 export default rippleElement

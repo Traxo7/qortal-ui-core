@@ -99,7 +99,7 @@ class ShowAddress extends connect(store)(LitElement) {
         this.user = state.user
         this.app = state.app
         this.wallet = state.app.wallet
-        if (state.app.wallet.addresses) console.log(state.app.wallet.addresses[0].address)
+        // if (state.app.wallet.addresses) //console.log(state.app.wallet.addresses[0].address)
     }
 
     download() {
@@ -108,7 +108,7 @@ class ShowAddress extends connect(store)(LitElement) {
         // 'application/json' - omit...
         const dataString = JSON.stringify(data)
         // return download(dataString, 'karma_backup.json')
-        console.log(dataString)
+        // console.log(dataString)
         // const zip = new JSZip()
         // zip.file(state.app.selectedAddress.address + '.json', dataString)
 
