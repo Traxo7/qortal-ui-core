@@ -47,15 +47,6 @@ const createRoutes = config => [
             }
         }
     },
-    // {
-    //     method: 'GET',
-    //     path: '/electron/{param*}',
-    //     handler: {
-    //         directory: {
-    //             path: path.join(__dirname, '../../node_modules/electron/'), redirectToSlash: true, index: true
-    //         }
-    //     }
-    // },
     {
         method: 'GET',
         path: '/bluebird/{param*}',
