@@ -23,7 +23,6 @@ import { doStoreWallet } from '../../redux/user/user-actions.js'
 // import { doUpdateAccountName } from '../../redux/user/user-actions.js'
 // import { createWallet } from '../../qora/createWallet.js'
 // import { createWallet } from '../../api/createWallet.js'
-// import { createWallet } from 'qortal-ui-crypto'
 import { createWallet } from 'qortal-ui-crypto'
 
 import snackbar from '../../functional-components/snackbar.js'
