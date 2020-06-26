@@ -79,6 +79,10 @@ const componentTree = {
                     'wallet-profile': {
                         file: 'components/wallet-profile.js',
                         className: 'WalletProfile'
+                    },
+                    'app-info': {
+                        file: 'components/app-info.js',
+                        className: 'AppInfo'
                     }
                 }
             },

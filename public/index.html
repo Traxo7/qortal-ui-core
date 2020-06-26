@@ -2,6 +2,7 @@
 <html lang="en-us">
 
 <head>
+
     <script>this.customElements || document.write('<script src="//unpkg.com/document-register-element"><\x2fscript>');</script>
     <script src="//unpkg.com/@ungap/custom-elements-builtin"></script>
 
@@ -28,6 +29,30 @@
     <meta name="theme-color" content="#ffffff">
 
     <style>
+        html {
+            --scrollbarBG: #CFD8DC;
+            --thumbBG: #90A4AE;
+        }
+
+        body::-webkit-scrollbar {
+            width: 11px;
+        }
+
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+        }
+
+        body::-webkit-scrollbar-track {
+            background: var(--scrollbarBG);
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: var(--thumbBG);
+            border-radius: 6px;
+            border: 3px solid var(--scrollbarBG);
+        }
+
         html,
         body {
             margin: 0;
@@ -57,14 +82,61 @@
 
 
     <script>
-            // Let's not spend time on this right now. Initial load is quick, just be happy with that for now
-            // Check that service workers are registered
-            // if ('serviceWorker' in navigator) {
-            //     // Use the window load event to keep the page load performant
-            //     window.addEventListener('load', () => {
-            //         navigator.serviceWorker.register('/src/service-worker.js');
-            //     });
-            // }
+        // Let's not spend time on this right now. Initial load is quick, just be happy with that for now
+        // Check that service workers are registered
+        // if ('serviceWorker' in navigator) {
+        //     // Use the window load event to keep the page load performant
+        //     window.addEventListener('load', () => {
+        //         navigator.serviceWorker.register('/src/service-worker.js');
+        //     });
+        // }
+
+        const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+        const heap = new Uint8Array(memory.buffer);
+
+        const sbrk = function (size, heap) {
+            let brk = 512 * 1024; // stack top
+            let old = brk;
+            brk += size;
+
+            if (brk > heap.length)
+                throw new Error("heap exhausted");
+
+            return old;
+        };
+
+        const importObject = {
+            env: {
+                memory: memory
+            },
+        };
+
+        function loadWebAssembly(filename, imports) {
+            // Fetch the file and compile it
+            return fetch(filename)
+                .then(response => response.arrayBuffer())
+                .then(buffer => WebAssembly.compile(buffer))
+                .then(module => {
+
+                    // Create the instance.
+                    return new WebAssembly.Instance(module, importObject);
+                });
+        }
+
+        const path = window.parent.location.origin + '/memory-pow/memory-pow.wasm'
+
+        loadWebAssembly(path)
+            .then(wasmModule => {
+
+                window.sbrk = sbrk
+                window.memory = memory
+                window.heap = heap
+                window.powInstance = wasmModule.instance;
+                window.computePow = wasmModule.exports.compute2;
+
+            }
+            );
+
     </script>
 
     <!-- Trash browser polyfills -->
@@ -73,7 +145,6 @@
         if (typeof fetch === 'undefined') document.write('<script src="/whatwg-fetch/dist/fetch.umd.js"><\/script>');
     </script>
     <script nomodule src="/systemjs/dist/s.js"></script>
-    <!-- <script nomodule src="/src/libraries/s.js"></script> -->
 </head>
 
 <body>
@@ -102,15 +173,10 @@
     <!-- <script src="/webcomponentsjs/webcomponents-loader.js"></script> -->
     <!-- <script src="/webcomponentsjs/webcomponents-bundle.js"></script> -->
 
-    <!-- Dynamic import polyfill, for lazy loading -->
-    <!-- <script type="module" src="https://unpkg.com/dimport?module" data-main="/build/es6/main.js"></script> -->
-    <!-- Too many issues...let's just use systemjs everywhere...it works well anyway -->
     <script type="module" src="/build/es6/main.js"></script>
 
     <!-- for every crap browser... -->
     <script nomodule>
-        // nvm the warning, it's being used for every browser
-        // console.warn('Your browser does not support modules. Loading through SystemJS.')
         System.import('/build/system/main.js')
     </script>
 

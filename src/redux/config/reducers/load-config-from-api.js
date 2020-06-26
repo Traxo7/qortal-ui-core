@@ -1,9 +1,8 @@
 export const loadConfigFromAPI = (state, action) => {
     switch (action.status) {
         case 'success':
-            // console.log('success!!!', action)
             return {
-                ...action.payload, // This is the new initial state
+                ...action.payload,
                 loaded: true,
                 loading: false
             }

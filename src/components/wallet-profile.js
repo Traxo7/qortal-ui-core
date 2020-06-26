@@ -3,11 +3,8 @@ import { connect } from 'pwa-helpers'
 import { store } from '../store.js'
 // import download from '../api/deps/download.js'
 // import JSZip from 'jszip'
-// import saveAs from 'file-saver/src/FileSaver.js'
 
 // import { Epml } from '../epml'
-
-// import { request } from 'qortal-ui-crypto'
 
 import FileSaver from 'file-saver'
 import { UPDATE_NAME_STATUSES } from '../redux/user/user-actions.js'
@@ -15,7 +12,6 @@ import { UPDATE_NAME_STATUSES } from '../redux/user/user-actions.js'
 // import '@material/mwc-icon'
 import '@polymer/paper-icon-button/paper-icon-button.js'
 import '@polymer/iron-icons/iron-icons.js'
-// import '@polymer/paper-dialog'
 import '@polymer/paper-toast'
 import '@polymer/paper-spinner/paper-spinner-lite'
 
@@ -25,7 +21,6 @@ import '@material/mwc-icon-button'
 import '@material/mwc-textfield'
 
 // const parentEpml = new Epml({ type: 'WINDOW', source: window.parent })
-const API_BASE = 'http://localhost:12391'
 
 class WalletProfile extends connect(store)(LitElement) {
     static get properties() {
@@ -36,14 +31,15 @@ class WalletProfile extends connect(store)(LitElement) {
             user: { type: Object },
             wallet: { type: Object },
             dialog: { type: Object },
-            newName: { type: String }
+            newName: { type: String },
+            nodeConfig: { type: Object },
+            accountInfo: { type: Object }
         }
     }
 
     static get styles() {
         return [
             css`
-                
             `
         ]
     }
@@ -53,6 +49,11 @@ class WalletProfile extends connect(store)(LitElement) {
         this.qoraBurnedBalance = ""
         this.user = {
             accountInfo: {}
+        }
+        this.nodeConfig = {}
+        this.accountInfo = {
+            names: [],
+            addressInfo: {}
         }
     }
 
@@ -74,11 +75,10 @@ class WalletProfile extends connect(store)(LitElement) {
                 #accountName {
                     margin: 0;
                     font-size: 18px;
-                    font-weight:100;
+                    font-weight:500;
                     display: inline-block;
                     width:100%;
                     padding-bottom:8px;
-                    ${this.user.accountInfo.nameStatus !== UPDATE_NAME_STATUSES.LOADED ? 'font-style: italic;' : ''}
                 }
                 #address {
                     white-space: nowrap; 
@@ -86,7 +86,7 @@ class WalletProfile extends connect(store)(LitElement) {
                     text-overflow: ellipsis;
 
                     margin:0;
-                    margin-top: -6px;
+                    margin-top: 0;
                     font-size:12px;
                     /* padding-top:8px; */
                 }
@@ -94,48 +94,29 @@ class WalletProfile extends connect(store)(LitElement) {
                     top: 8px;
                     margin-left:8px;
                     --paper-spinner-stroke-width: 1px;
-                    --paper-spinner-color: var(--mdc-theme-secondary) /* Shouldn't have to do this :( */
+                    --paper-spinner-color: var(--mdc-theme-secondary)
                 }
             </style>
 
 
             <div id="profileInMenu">
-                <!-- <paper-ripple></paper-ripple> -->
                 <div>
                     <mwc-icon id='accountIcon'>account_circle</mwc-icon>
                 </div>
                 <div style="padding: 8px 0;">
                     <span id="accountName"
-                        title=${this.user.accountInfo.nameStatus !== UPDATE_NAME_STATUSES.LOADED ? 'You are not minting' : 'Minting'}
+                        title=${this.user.accountInfo.nameStatus !== UPDATE_NAME_STATUSES.LOADED ? '' : ''}
                     >
-                        <!-- No name set  -->
-                        ${this.user.accountInfo.name}
-                        <!-- <mwc-icon style="float:right; top: -10px;">keyboard_arrow_down</mwc-icon> -->
+                        ${this.accountInfo.names.length !== 0 ? this.accountInfo.names[0].name : ''}
                         <mwc-icon-button 
-                            style="float:right; top: 0px;"
+                            style="float:right; top: 0px; margin: -14px;"
                             @click=${() => this.openModalBox()}
                             icon="info"></mwc-icon-button>
-                        <!-- <paper-icon-button
-                            
-                            style="float:right; top: 0px;"
-                            icon="icons:info"></paper-icon-button> -->
                     </span>
+                    ${this.accountInfo.addressInfo ? html`<span style="margin-bottom: 8px; display: inline-block;">Account Level - ${this.accountInfo.addressInfo.level} ${this.accountInfo.addressInfo.flags === 1 ? html`<strong>(F)</strong>` : ""}</span>` : ''}
                     <p id="address">${this.wallet.addresses[0].address}</p>
                 </div>
             </div>
-
-            <mwc-dialog id="setNameDialog">
-                <h1 style="font-size: 24px; padding-top: 6px;">Set name</h1>
-
-                <p style="margin-bottom:0;">
-                    Note that this can only ever be done <strong>once</strong>. Name can contain any utf-8 character, however letters will
-                    be converted to lowercase.
-                </p>
-                <paper-input @input=${e => { this.newName = e.target.value }} style="margin-top:0;" label="Name" type="text"></paper-input>
-
-                <mwc-button slot="primaryAction" class="confirm" @click=${() => this._setName()}>Go</mwc-button>
-                <mwc-button slot="secondaryAction" dialogAction="close" class="red-button">Cancel</mwc-button>
-            </mwc-dialog>
 
             <div id="dialogs">
                 <style>
@@ -176,9 +157,8 @@ class WalletProfile extends connect(store)(LitElement) {
                 </style>
                 <mwc-dialog id="profileDialog">
                     <div>
-                    <!-- Gets moved to documnet.body so we need to put styles here -->
                         <div style="text-align:center">
-                            <mwc-icon id="dialogAccountIcon">account_circle</mwc-icon>
+                            <mwc-icon style="font-size:76px;" id="dialogAccountIcon">account_circle</mwc-icon>
                             <h1>Profile</h1>
                             <hr>
                         </div>
@@ -228,115 +208,64 @@ class WalletProfile extends connect(store)(LitElement) {
 
     openModalBox() {
 
-        // CAll getBurnedQora
+        // Call getBurnedQora
         this.getBurnedQora(this.wallet.addresses[0].address)
-
-        // this.dialog.show()
-
-        // GOing to be using my fetch for now...
-        // request()
-
-    }
-
-    openSetName() {
-        if (this.name) return
-        if (this.setNameInProgress) return
-        this.setNameDialog.show()
-    }
-
-    _setName() {
-        this.setNameDialog.close()
-        this.dialog.close()
-        this.toast.text = 'Name has been set. It may take a few minutes to show.'
-        this.toast.duration = 6000
-        this.toast.show()
-        this.setNameInProgress = true
-        setTimeout(() => {
-            this.setNameInProgress = false
-        }, 5 * 60 * 1000) // 5 minutes
     }
 
     firstUpdated() {
+
         const container = document.body.querySelector('main-app').shadowRoot.querySelector('app-view').shadowRoot
         const dialogs = this.shadowRoot.getElementById('dialogs')
         this.dialogContainer = container
         container.appendChild(dialogs)
-        // console.log(container)
-        // const setNameDialog = this.shadowRoot.getElementById('setNameDialog')
         this.dialog = container.getElementById('profileDialog')
-        this.setNameDialog = container.getElementById('setNameDialog')
 
         const toast = this.shadowRoot.getElementById('toast')
-        // querySelector('show-plugin').shadowRoot.
-
         const isMobile = window.matchMedia(`(max-width: ${getComputedStyle(document.body).getPropertyValue('--layout-breakpoint-tablet')})`).matches
+
         if (isMobile) {
+
             toast.verticalAlign = 'bottom'
             toast.verticalOffset = 0
         }
-
         this.toast = container.appendChild(toast)
-
-        // TODO: Make this more like a state thing (This is only a temporary fix.. )
-        // Set Up parentEpml
-        // let configLoaded = false
-        // parentEpml.ready().then(() => {
-        //     parentEpml.subscribe('config', c => {
-        //         if (!configLoaded) {
-        //             setTimeout(() => this.getBurnedQora(), 1)
-        //             configLoaded = true
-        //         }
-        //         this.myConfig = JSON.parse(c)
-        //     })
-        // })
-
-        // parentEpml.imReady()
-
-
     }
 
     getBurnedQora(address) {
-        console.log("================ GET BURNED QORA =================");
-        // TODO: Might want to use the EPML package for making API calls...
-        // UPDATE: Saw this (request) func from qortal-crypto which makes the API calls. And this uses the same pattern as mine below... (only some defined conf which I can set up in here...) 
-        fetch(`${API_BASE}/addresses/balance/${address}?assetId=1`).then(res => {
-            // Response is a Readable Stream...
-            return res.json()
 
+        let myNode = this.nodeConfig.knownNodes[this.nodeConfig.node]
+        let nodeUrl = myNode.protocol + '://' + myNode.domain + ":" + myNode.port
+
+        fetch(`${nodeUrl}/addresses/balance/${address}?assetId=1`).then(res => {
+
+            return res.json()
         }).then(data => {
+
             this.qoraBurnedBalance = data;
             this.dialog.show()
         })
-
     };
 
     async downloadBackup() {
-        console.log('== DOWNLOAD ==')
+
         const state = store.getState()
         const password = this.dialogContainer.getElementById('downloadBackupPassword').value
-        // const data = state.user.storedWallets[state.app.selectedAddress.address]
-        const data = await state.app.wallet.generateSaveWalletData(password, state.config.crypto.kdfThreads, () => { })
-        // 'application/json' - omit...
-        // console.log(data)
-        const dataString = JSON.stringify(data)
-        // return download(dataString, 'karma_backup.json')
-        // console.log(dataString)
-        // const zip = new JSZip()
-        // zip.file(state.app.selectedAddress.address + '.json', dataString)
 
-        // zip.generateAsync({ type: 'blob' })
-        //     // .then(blob => FileSaver.saveAs(blob, `qortal_backup_${state.app.selectedAddress.address}.zip`))
-        //     .then(blob => saveAs(blob, `qortal_backup_${state.app.selectedAddress.address}.zip`))
+        const data = await state.app.wallet.generateSaveWalletData(password, state.config.crypto.kdfThreads, () => { })
+        const dataString = JSON.stringify(data)
+
         const blob = new Blob([dataString], { type: 'text/plain;charset=utf-8' })
-        // const blob = new Blob([dataString], { type: 'application/json' })
         FileSaver.saveAs(blob, `qortal_backup_${state.app.selectedAddress.address}.json`)
     }
 
     stateChanged(state) {
+
         this.loggedIn = state.app.loggedIn
         this.config = state.config
         this.user = state.user
         this.wallet = state.app.wallet
+        this.nodeConfig = state.app.nodeConfig
+        this.accountInfo = state.app.accountInfo
     }
 }
 

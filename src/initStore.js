@@ -1,5 +1,6 @@
 import { store } from './store.js'
 import { doLoadConfigFromAPI } from './redux/config/config-actions.js'
+import { doLoadNodeConfig } from './redux/app/app-actions.js'
 import { doInitWorkers } from './redux/app/app-actions.js'
 import './persistState.js'
 
@@ -11,9 +12,14 @@ initApi(store)
 
 const workerInitChecker = () => {
     const state = store.getState()
+
+    if (store.getState().app.nodeConfig.knownNodes.length === 0) {
+        store.dispatch(doLoadNodeConfig())
+    }
     // console.log('store changed', state)
     // Once config is loaded set up the workers
     if (state.config.loaded) {
+        store.dispatch(doLoadNodeConfig())
         // Once the workers are loaded we can get rid of this subscription (clean up)
         if (state.app.workers.ready) {
             // console.log('unsubbing')
@@ -29,4 +35,7 @@ const workerInitChecker = () => {
 workerInitChecker()
 const workerInitSubscription = store.subscribe(workerInitChecker)
 
-if (!store.getState().config.loaded) store.dispatch(doLoadConfigFromAPI())
+if (!store.getState().config.loaded) {
+    store.dispatch(doLoadConfigFromAPI())
+    store.dispatch(doLoadNodeConfig())
+}

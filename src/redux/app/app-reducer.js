@@ -1,8 +1,8 @@
 // Loading state, login state, isNavDrawOpen state etc. None of this needs to be saved to localstorage.
-import { LOG_IN, LOG_OUT, NETWORK_CONNECTION_STATUS, INIT_WORKERS, ADD_PLUGIN_URL, ADD_PLUGIN, NAVIGATE, SELECT_ADDRESS } from './app-action-types.js'
-// import { initWorkersReducer } from './initWorkersReducer.js'
+import { LOG_IN, LOG_OUT, NETWORK_CONNECTION_STATUS, INIT_WORKERS, ADD_PLUGIN_URL, ADD_PLUGIN, NAVIGATE, SELECT_ADDRESS, ACCOUNT_INFO, CHAT_HEADS, UPDATE_BLOCK_INFO, UPDATE_NODE_STATUS, UPDATE_NODE_INFO, LOAD_NODE_CONFIG, SET_NODE, ADD_NODE, PAGE_URL } from './app-action-types.js'
 import { initWorkersReducer } from './reducers/init-workers.js'
 import { loginReducer } from './reducers/login-reducer.js'
+import { setNode, addNode } from './reducers/manage-node.js';
 
 const INITIAL_STATE = {
     loggedIn: false,
@@ -19,10 +19,24 @@ const INITIAL_STATE = {
             }
         ]
     },
+    nodeConfig: {
+        node: 1,
+        knownNodes: [{}],
+        version: ''
+    },
     plugins: [],
-    registeredUrls: {},
+    registeredUrls: [],
+    accountInfo: {
+        names: [],
+        addressInfo: {}
+    },
     url: '',
-    selectedAddress: {}
+    selectedAddress: {},
+    chatHeads: {},
+    blockInfo: {},
+    nodeInfo: {},
+    nodeStatus: {},
+    pageUrl: ""
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -34,7 +48,7 @@ export default (state = INITIAL_STATE, action) => {
         case LOG_OUT:
             return {
                 ...state,
-                pin: '', // Probably shouldn't store this plain text...ever. Better store a quick hash... stops someone from peeping your pin...not that that's the vital part
+                pin: '',
                 loggedIn: false,
                 loggingIn: false,
                 wallet: INITIAL_STATE.wallet
@@ -50,10 +64,46 @@ export default (state = INITIAL_STATE, action) => {
         case ADD_PLUGIN_URL:
             return {
                 ...state,
-                registeredUrls: {
-                    ...state.registeredUrls,
-                    [action.payload.url]: action.payload
-                }
+                registeredUrls: state.registeredUrls.concat(action.payload)
+            }
+        case CHAT_HEADS:
+            return {
+                ...state,
+                chatHeads: action.payload
+            }
+        case UPDATE_BLOCK_INFO:
+            return {
+                ...state,
+                blockInfo: action.payload
+            }
+        case UPDATE_NODE_STATUS:
+            return {
+                ...state,
+                nodeStatus: action.payload
+            }
+        case UPDATE_NODE_INFO:
+            return {
+                ...state,
+                nodeInfo: action.payload
+            }
+        case ACCOUNT_INFO:
+            return {
+                ...state,
+                accountInfo: action.payload
+            }
+        case LOAD_NODE_CONFIG:
+            return {
+                ...state,
+                nodeConfig: action.payload
+            }
+        case SET_NODE:
+            return setNode(state, action)
+        case ADD_NODE:
+            return addNode(state, action)
+        case PAGE_URL:
+            return {
+                ...state,
+                pageUrl: action.payload
             }
         case NAVIGATE:
             return {

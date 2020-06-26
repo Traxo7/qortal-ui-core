@@ -3,13 +3,6 @@ import { connect } from 'pwa-helpers'
 import { store } from '../../store.js'
 import { stateAwait } from '../../stateAwait.js'
 
-// import { createWallet } from '../../qora/createWallet.js'
-// import { generateSaveWalletData } from '../../qora/storeWallet.js'
-// import { doSelectAddress } from '../../redux/app/app-actions.js'
-// import { doStoreWallet } from '../../redux/user/user-actions.js'
-
-// import { logIn } from '../../actions/app-actions.js'
-
 import '@material/mwc-button'
 import '@material/mwc-icon'
 import '@material/mwc-fab'
@@ -17,7 +10,6 @@ import '@material/mwc-fab'
 import '@polymer/iron-pages'
 import '@polymer/paper-icon-button/paper-icon-button.js'
 
-// import particleJS from 'particle.js'
 import './particle.js'
 
 import './welcome-page.js'
@@ -33,11 +25,8 @@ window.reduxStore = store
 
 const animationDuration = 0.7 // Seconds
 
-// import { MDCTextField } from '@material/textfield'
-// const textField = new MDCTextField(document.querySelector('.mdc-text-field'))
-
 class LoginView extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             loggedIn: { type: 'Boolean' },
             selectedPage: { type: 'String' },
@@ -45,11 +34,11 @@ class LoginView extends connect(store)(LitElement) {
             rippleIsOpen: { type: Boolean },
             config: { type: Object },
             rippleLoadingMessage: { type: String },
-            selectedPageElement: { }
+            selectedPageElement: {}
         }
     }
 
-    static get styles () {
+    static get styles() {
         return [
             css`
                 
@@ -57,12 +46,12 @@ class LoginView extends connect(store)(LitElement) {
         ]
     }
 
-    getPreSelectedPage () {
+    getPreSelectedPage() {
         // return (store.getState().user.storedWallets && Object.entries(store.getState().user.storedWallets || {}).length > 0) ? 'login' : 'welcome'
         return 'welcome'
     }
 
-    constructor () {
+    constructor() {
         super()
         this.selectedPage = this.getPreSelectedPage()
         this.selectedPageElement = {}
@@ -75,7 +64,7 @@ class LoginView extends connect(store)(LitElement) {
         this.rippleLoadingMessage = 'Getting information'
     }
 
-    firstUpdated () {
+    firstUpdated() {
         // this.shadowRoot.getElementById('createAccountSection').loginFunction = (...args) => this.login(...args)
         // this.shadowRoot.getElementById('loginSection').loginFunction = (...args) => this.login(...args)
         stateAwait(state => {
@@ -122,7 +111,7 @@ class LoginView extends connect(store)(LitElement) {
         })
     }
 
-    render () {
+    render() {
         return html`
             <style>
                 canvas {
@@ -312,7 +301,6 @@ class LoginView extends connect(store)(LitElement) {
                     <img class="qortal-logo" src="${this.config.coin.logo}">
                     <div class="login-card-center-container">
                         <div class="login-card" id="login-card">
-                            <!-- <div class='corner-box' style="width:50px; height:50px; border-left:3px solid; border-top: 3px solid; float:left; margin-left:-50px;"></div> -->
                             <iron-pages selected="${this.selectedPage}" attr-for-selected="page" id="loginContainerPages">
                                 <!-- Instead make the page fire a page change event, catch it and respond -->
                                 <welcome-page @next=${e => this.selectedPageElement.next(e)} page="welcome"></welcome-page>
@@ -329,8 +317,6 @@ class LoginView extends connect(store)(LitElement) {
                                     ${this.selectedPageElement.nextText}<mwc-icon>keyboard_arrow_right</mwc-icon>
                                 </mwc-button>
                             </div>
-
-                            <!-- <div class='corner-box' style="width:50px; height:50px; border-right:3px solid; border-bottom: 3px solid; float:right; margin-right:-50px; margin-top:-50px;"></div> -->
                         </div>
                     </div>
                 </div>
@@ -338,39 +324,17 @@ class LoginView extends connect(store)(LitElement) {
         `
     }
 
-    selectPage (newPage) {
-        // const oldPage = this.selectedPage
+    selectPage(newPage) {
         this.selectedPage = newPage
-        // this._pageChange(newPage, oldPage)
     }
-    // Doesn't actually do anything now
-    // So let's comment it!
-    // _pageChange (newPage, oldPage) {
-    //     if (!this.shadowRoot.querySelector('#loginContainerPages') || !newPage) {
-    //         return
-    //     }
-    //     const pages = this.shadowRoot.querySelector('#loginContainerPages').children
-    //     // Run the animation on the newly selected page
-    //     const newIndex = this.pages[newPage]
-    //     if (!pages[newIndex].className.includes('animated')) {
-    //         // pages[newIndex].className += ' animated'
-    //     }
 
-    //     if (typeof oldPage !== 'undefined') {
-    //         const oldIndex = this.pages[oldPage]
-    //         // Stop the animation of hidden pages
-    //         // pages[oldIndex].className = pages[oldIndex].className.split(' animated').join('');
-    //         pages[oldIndex].classList.remove('animated')
-    //     }
-    // }
-
-    stateChanged (state) {
+    stateChanged(state) {
         if (this.loggedIn && !state.app.loggedIn) this.cleanup()
         this.loggedIn = state.app.loggedIn
         this.config = state.config
     }
 
-    cleanup () {
+    cleanup() {
         this.selectedPage = 'welcome'
     }
 }

@@ -2,26 +2,22 @@ import { LitElement, html, css } from 'lit-element'
 import { connect } from 'pwa-helpers'
 import { store } from '../../store.js'
 
-// import { createWallet } from '../../../qora/createWallet.js'
-// import { createWallet } from '../../qora/createWallet.js'
-// import { createWallet } from '../../api/createWallet.js'
+// import { send } from '../../__src.js'
+
 import { createWallet } from 'qortal-ui-crypto'
+
+import FileSaver from 'file-saver'
 
 import { doLogin, doLogout, doSelectAddress } from '../../redux/app/app-actions.js'
 import { doStoreWallet } from '../../redux/user/user-actions.js'
-// import { registerUsername } from '../../api/registerUsername.js'
-// import { registerUsername } from 'qortal-ui-crypto'
 
 import snackbar from '../../functional-components/snackbar.js'
 
-// import { logIn } from '../../actions/app-actions.js'
 import '@material/mwc-button'
 import '@material/mwc-icon-button'
 import '@material/mwc-checkbox'
 import '@material/mwc-icon'
 import '@material/mwc-formfield'
-// import '@material/mwc-checkbox'
-// import '@polymer/paper-checkbox/paper-checkbox.js'
 
 import '@polymer/iron-pages'
 import '@polymer/iron-label/iron-label.js'
@@ -51,7 +47,11 @@ class CreateAccountSection extends connect(store)(LitElement) {
             nextButtonText: { type: String },
             saveAccount: { type: Boolean },
             createAccountLoading: { type: Boolean },
-            hasSavedSeedphrase: { type: Boolean }
+            showSeedphrase: { type: Boolean },
+            _wallet: { type: Object },
+            _pass: { type: String },
+            _name: { type: String },
+            isDownloadedBackup: { type: Boolean }
         }
     }
 
@@ -67,12 +67,14 @@ class CreateAccountSection extends connect(store)(LitElement) {
         super()
         this.nextText = 'Next'
         this.backText = 'Back'
-        this.nextDisabled = true
-
+        this.nextDisabled = false
+        this._pass = ''
+        this._name = ''
         this.selectedPage = 'info'
         this.nextButtonText = 'Next'
         this.saveAccount = true
-        this.hasSavedSeedphrase = false
+        this.showSeedphrase = false
+        this.isDownloadedBackup = false
         this.createAccountLoading = false
         const welcomeMessage = 'Welcome to Qortal'
         this.welcomeMessage = welcomeMessage
@@ -80,17 +82,9 @@ class CreateAccountSection extends connect(store)(LitElement) {
         this.pages = {
             info: {
                 next: e => {
+
                     this.error = false
                     this.errorMessage = ''
-                    // const randSeedPhrase = this.shadowRoot.getElementById('randSentence').parsedString
-                    // const seedPhrase = this.shadowRoot.getElementById('seedPhrase').value
-                    // console.log(randSeedPhrase, seedPhrase)
-                    if (!this.hasSavedSeedphrase) {
-                        this.error = true
-                        this.errorMessage = 'Please save your seedphrase!'
-                        return
-                    }
-
                     this.nextButtonText = 'Create'
                     this.selectPage('password')
                     this.updateNext()
@@ -103,77 +97,74 @@ class CreateAccountSection extends connect(store)(LitElement) {
                 next: e => {
                     // Create account and login :)
                     this.createAccountLoading = true
+                    const nameInput = this.shadowRoot.getElementById('nameInput').value
                     const password = this.shadowRoot.getElementById('password').value
-                    // console.log(this.shadowRoot.getElementById('password'))
 
-                    if (this.saveAccount) {
-                        if (password === '') {
-                            snackbar.add({
-                                labelText: 'Please enter a password',
-                                dismiss: true
-                            })
-                            return
-                        }
 
-                        if (password.length < 8 && lastPassword !== password) {
-                            snackbar.add({
-                                labelText: 'Your password is less than 8 characters! This is not recommended. You can press login again to ignore this warning.',
-                                dismiss: true
-                            })
-                            lastPassword = password
-                            return
-                        }
+                    if (password === '') {
+
+                        snackbar.add({
+                            labelText: 'Please enter a Password!',
+                            dismiss: true
+                        })
+                        return
                     }
 
+                    if (password.length < 8 && lastPassword !== password) {
+
+                        snackbar.add({
+                            labelText: 'Your password is less than 8 characters! This is not recommended. You can continue to ignore this warning.',
+                            dismiss: true
+                        })
+                        lastPassword = password
+                        return
+                    }
+
+                    if (this.saveAccount === true && nameInput === '') {
+
+                        snackbar.add({
+                            labelText: 'Please enter a Name!',
+                            dismiss: true
+                        })
+                        return
+                    }
+
+                    this._name = nameInput
+                    this._pass = password
+
+                    let seedObj = {}
                     const seedPhrase = this.shadowRoot.getElementById('randSentence').parsedString
+                    seedObj = { seedPhrase: seedPhrase }
 
-                    // this.loadingRipple.welcomeMessage = welcomeMessage + ', ' + username
                     ripple.welcomeMessage = welcomeMessage
-
-                    // this.loadingRipple.open({
                     ripple.open({
                         x: e.clientX,
                         y: e.clientY
                     })
-                        .then(() => createWallet('phrase', seedPhrase, status => {
-                            // this.loadingRipple.loadingMessage = status
+                        .then(() => createWallet('phrase', seedObj, status => {
+
                             ripple.loadingMessage = status
                         }))
                         .then(wallet => {
-                            // .then(() => store.dispatch(doLogin('phrase', seedPhrase, status => {
-                            //     this.loadingRipple.loadingMessage = status
-                            // })))
-                            // Get airdrop here ninja
-                            // Do the callbacks here so that I can return the wallet again at the end of it
 
-                            store.dispatch(doLogin(wallet, password))
-                            store.dispatch(doSelectAddress(wallet.addresses[0]))
-                            this.navigate('show-address')
-                            // return this.loadingRipple.fade()
+                            this._wallet = wallet
+
+
                             return ripple.fade()
-                                // Save account after user is logged in...for good UX
-                                .then(() => {
-                                    // console.log(this, this.saveAccount)
-                                    if (!this.saveAccount) return
-                                    return store.dispatch(doStoreWallet(wallet, password, '' /* username */, () => {
-                                        // console.log('STATUS UPDATE <3')
-                                        // this.loadingRipple.loadingMessage = status
-                                        ripple.loadingMessage = status
-                                    })).catch(err => console.error(err))
-                                    // ^^ Don't want this one to break logging
-                                })
                         })
-                        .then(() => this.cleanup())
+                        .then(() => {
+
+                            this.selectPage('backup')
+                            this.updateNext()
+                        })
                         .catch(e => {
+
                             snackbar.add({
                                 labelText: e,
                                 dismiss: true
                             })
-                            // this.error = true
-                            // this.errorMessage = e
                             console.error('== Error == \n', e)
                             store.dispatch(doLogout())
-                            // this.loadingRipple.close()
                             ripple.close()
                         })
                 },
@@ -181,27 +172,83 @@ class CreateAccountSection extends connect(store)(LitElement) {
                     this.selectPage('info')
                     this.updateNext()
                 }
+            },
+            backup: {
+                next: e => {
+
+                    if (!this.isDownloadedBackup) {
+
+                        snackbar.add({
+                            labelText: 'Please Download Your Wallet BackUp file!',
+                            dismiss: true
+                        })
+                    } else {
+
+                        if (this.saveAccount) {
+
+                            ripple.welcomeMessage = 'Preparing Your Account'
+                            ripple.open({
+                                x: e.clientX,
+                                y: e.clientY
+                            })
+                                .then(() => {
+
+                                    store.dispatch(doStoreWallet(this._wallet, this._pass, this._name, () => {
+
+                                        ripple.loadingMessage = 'Loading, Please wait...'
+                                    }))
+                                        .then(() => {
+
+                                            store.dispatch(doLogin(this._wallet))
+                                            store.dispatch(doSelectAddress(this._wallet.addresses[0]))
+                                            this.cleanup()
+                                            return ripple.fade()
+                                        })
+                                        .catch(err => console.error(err))
+                                }).catch(err => {
+                                    console.error(err);
+                                })
+
+
+                        } else {
+
+                            store.dispatch(doLogin(this._wallet))
+                            store.dispatch(doSelectAddress(this._wallet.addresses[0]))
+                            this.cleanup()
+                        }
+
+                    }
+                },
+                back: () => {
+                    this.navigate('welcome')
+                }
             }
         }
         this.pageIndexes = {
             info: 0,
-            password: 1
+            password: 1,
+            backup: 2
         }
 
         this.nextEnabled = false
         this.prevEnabled = false
     }
 
-    cleanup() { // Practically the constructor...what a waste
+    cleanup() {
         this.shadowRoot.getElementById('randSentence').generate()
+        this.shadowRoot.getElementById('nameInput').value = ''
         this.shadowRoot.getElementById('password').value = ''
-        this.hasSavedSeedphrase = false
+        this.showSeedphrase = false
         this.selectPage('info')
         this.error = false
         this.errorMessage = ''
         this.nextButtonText = 'Next'
         this.createAccountLoading = false
         this.saveAccount = true
+        this.isDownloadedBackup = false
+        this._wallet = ''
+        this._pass = ''
+        this._name = ''
     }
 
     render() {
@@ -233,7 +280,6 @@ class CreateAccountSection extends connect(store)(LitElement) {
                 #createAccountPages [page] {
                     flex-shrink:1;
                 }
-                /* #tosContent { */
                 /* .section-content {
                     padding:0 24px;
                     padding-bottom:0;
@@ -243,18 +289,22 @@ class CreateAccountSection extends connect(store)(LitElement) {
                     
                 } */
 
+                #download-area {
+                    border: 2px dashed #ccc;
+                    font-family: "Roboto", sans-serif;
+                    padding: 10px;
+                }
+                #trigger:hover {
+                    cursor: pointer;
+                }
+
                 mwc-checkbox::shadow .mdc-checkbox::after, mwc-checkbox::shadow .mdc-checkbox::before {
                     background-color:var(--mdc-theme-primary)
                 }
                 @media only screen and (max-width: ${getComputedStyle(document.body).getPropertyValue('--layout-breakpoint-tablet')}) {
                     /* Mobile */
                     #createAccountSection {
-                        /* max-height: calc(var(--window-height) - 204px); */
-                        /* max-height: calc(var(--window-height) - 38px); */
-                        /* height: calc(var(--window-height) - 38px); */
-                        /* max-width:var(--layout-breakpoint-tablet); */
                         max-width: 100%;
-                        /* height:100%; */
                         height: calc(var(--window-height) - 56px);
                     }
                     #infoContent{
@@ -299,22 +349,23 @@ class CreateAccountSection extends connect(store)(LitElement) {
                     <div page="info">
                         <div id="infoContent" class="section-content" style="">
                             <br>
-                            <!-- <p style="margin-bottom:0;">
-                                Below is a randomly generated seedphrase. You can regenerate it until you find one that you like. Please write it down and/or memorise it. You will need it in order to login to your account.
-                            </p> -->
                             <h3 style="text-align:center; margin-top: 0; font-weight: 100; font-family: 'Roboto Mono', monospace;">Create account</h3>
                             <p>
-                                Welcome to QORT, you will find it to be similar to that of an RPG game, you, as a minter on the QORT network (if you choose to become one) will have the chance to level your account up, giving you both more of the QORT block reward and also larger influence over the network in terms of voting on decisions for the platform. 
+                                Welcome to QORT, you will find it to be similar to that of an RPG game, 
+                                you, as a minter on the QORT network (if you choose to become one) will have the chance to level your account up, 
+                                giving you both more of the QORT block reward and also larger influence over the network in terms of voting on decisions for the platform. 
                             </p>
                             <p style="margin-bottom:0;">
-                                The first step, is to create your QORT account! Below, you will see a randomly generated ‘seedphrase’. This phrase is used as your private key generator for your blockchain account in QORT. Please write this phrase down and save it somewhere safe. This is extremely important information for your QORT account.
+                                Create your QORT account by clicking Next below. 
+                                A ‘seedphrase’ will be randomly generated and this is used as your private key generator for your blockchain account in QORT. 
+                                <strong>ONLY</strong> show your seedphrase if you are an <strong>ADVANCED USER</strong>. And when you do, Please be careful and make sure it is safely and securely stored. 
+                                This is extremely important information for your QORT account.
                             </p>
 
-                            <!-- border-bottom: 2px solid var(--mdc-theme-primary); border-top: 2px solid var(--mdc-theme-primary); -->
-                            <div style="border-radius: 4px; padding-top: 8px; background: rgba(3,169,244,0.1); margin-top: 24px;">
+                            <div id="seedBox" ?hidden="${!this.showSeedphrase}" style="border-radius: 4px; padding-top: 8px; background: rgba(3,169,244,0.1); margin-top: 24px;">
                                 <div style="display: inline-block; padding:12px; width:calc(100% - 84px);">
                                     <random-sentence-generator
-                                        template="adverb verb the adjective noun and verb the adjective noun with the adjective noun"
+                                        template="adverb verb noun adjective noun adverb verb noun adjective noun adjective verbed adjective noun"
                                         id="randSentence"></random-sentence-generator>
                                 </div>
                                         <!--
@@ -336,25 +387,26 @@ class CreateAccountSection extends connect(store)(LitElement) {
                                     @click=${() => this.shadowRoot.getElementById('randSentence').generate()}
                                 ></paper-icon-button>
                             </div>
-                             <!-- <div style="display:flex;">
-                                <mwc-icon style="padding: 20px; padding-left:0; padding-top: 26px;">lock</mwc-icon>
-                                <paper-input style="width:100%;" id="seedPhrase" always-float-labell label="Repeat seed phrase"></paper-input>
-                            </div> -->
                         </div>
                         <div style="text-align:right; vertical-align: top; line-height: 40px; margin:0;">
                             <label
                                 for="hasSavedSeedphraseCheckbox"
-                                @click=${() => this.shadowRoot.getElementById('hasSavedSeedphraseCheckbox').click()}
-                                >I have saved my seedphrase</label>
-                                <mwc-checkbox id="hasSavedSeedphraseCheckbox" @click=${e => { this.hasSavedSeedphrase = !e.target.checked; this.updateNext() }} ?checked=${this.hasSavedSeedphrase}></mwc-checkbox>
+                                @click=${() => this.shadowRoot.getElementById('showSeedphraseCheckbox').click()}
+                                >I'm an advanced user, show my seed phrase</label>
+                                <mwc-checkbox id="showSeedphraseCheckbox" @click=${e => { this.showSeedphrase = !e.target.checked; this.updateNext() }} ?checked=${this.showSeedphrase}></mwc-checkbox>
                         </div>
                     </div>
 
                     <div page="password">
                         <div id="saveContent" class="section-content">
                             <h3>Save in browser</h3>
-                            <p style="text-align: justify;">Your account is now ready to be created. It will be saved in this browser. If you do not want your new account to be saved in your browser you can uncheck the box below. You will still be able to login with your new account(after logging out), you'll just have to retype your seedphrase.</p>
-                            <div style="display:flex;" ?hidden=${!this.saveAccount}>
+                            <p style="text-align: justify;">Your account is now ready to be created. It will be saved in this browser. If you do not want your new account to be saved in your browser, you can uncheck the box below. 
+                            You will still be able to login with your new account(after logging out), using your wallet backup file that you MUST download once you create your account.</p>
+                            <div style="display:flex; margin-bottom: -1.4rem;" ?hidden="${!this.saveAccount}">
+                                <mwc-icon style="padding: 20px; padding-left:0; padding-top: 28px;">perm_identity</mwc-icon>
+                                <paper-input style="width:100%;" label="Name" id="nameInput"></paper-input>
+                            </div>
+                            <div style="display:flex;">
                                 <mwc-icon style="padding: 20px; padding-left:0; padding-top: 28px;">vpn_key</mwc-icon>
                                 <paper-input style="width:100%;" label="Password" id="password" type="password"></paper-input>
                             </div>
@@ -364,6 +416,34 @@ class CreateAccountSection extends connect(store)(LitElement) {
                                     @click=${() => this.shadowRoot.getElementById('saveInBrowserCheckbox').click()}
                                     >Save in this browser</label>
                                     <mwc-checkbox id="saveInBrowserCheckbox" @click=${e => { this.saveAccount = !e.target.checked }} ?checked=${this.saveAccount}></mwc-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div page="backup">
+                        <div id="downloadBackup" class="section-content">
+                            <h3>Download Wallet BackUp File</h3>
+                            <p style="text-align: justify;">Your account is now created${this.saveAccount ? ' and will be saved in this browser.' : '.'}</p>
+                            <p style="margin:0;">
+                                This file is the <strong>ONLY</strong> way to access your account on a system that doesn't have it saved to the app/browser, 
+                                <strong>BE SURE TO BACKUP THIS FILE IN MULTPLE PLACES.</strong> The file is encrypted very securely and decrypted with your local password you created in previous step. 
+                                So you can save it anywhere securely. 
+                                But be sure to do that, in multiple locations.
+                            </p>
+                            <div id="download-area">
+                                <div style="line-height:40px;">
+                                    <span style="padding-top:6px; margin-right: 10px;">Download Wallet BackUp File</span>
+                                    <slot id="trigger" name="inputTrigger" @click=${() => this.downloadBackup(this._wallet)} style="dispay:inline;">
+                                        <mwc-button><mwc-icon>cloud_download</mwc-icon>&nbsp; Save</mwc-button>
+                                    </slot>
+                                </div>
+                            </div>
+                            <div style="text-align:right; vertical-align: top; line-height: 40px; margin:0;">
+                                <label
+                                    for="downloadBackupCheckbox"
+                                    @click=${() => this.shadowRoot.getElementById('downloadBackupCheckbox').click()}
+                                    >Done saving your wallet backup ?</label>
+                                    <mwc-checkbox id="downloadBackupCheckbox" @click=${e => { this.isDownloadedBackup = !e.target.checked; this.updateNext() }} ?checked=${this.isDownloadedBackup}></mwc-checkbox>
                             </div>
                         </div>
                     </div>
@@ -386,7 +466,6 @@ class CreateAccountSection extends connect(store)(LitElement) {
         if (typeof oldPage !== 'undefined') {
             const oldIndex = this.pageIndexes[oldPage]
             // Stop the animation of hidden pages
-            // pages[oldIndex].className = pages[oldIndex].className.split(' animated').join('');
             pages[oldIndex].classList.remove('animated')
         }
     }
@@ -400,10 +479,14 @@ class CreateAccountSection extends connect(store)(LitElement) {
     updateNext() {
         if (this.selectedPage === 'info') {
             this.nextText = 'Next'
-            this.nextDisabled = !this.hasSavedSeedphrase
-        } else if (this.selectPage === 'password') {
             this.nextDisabled = false
-            this.nextText = 'Create account'
+        } else if (this.selectedPage === 'password') {
+            this.nextDisabled = false
+            this.nextText = 'Create Account'
+        } else if (this.selectedPage === 'backup') {
+            this.nextDisabled = !this.isDownloadedBackup
+            this.backHidden = true
+            this.nextText = 'Continue'
         }
 
         this.updatedProperty()
@@ -414,10 +497,8 @@ class CreateAccountSection extends connect(store)(LitElement) {
     }
 
     next(e) {
+
         this.pages[this.selectedPage].next(e)
-        // if (this.selectedPage === 'info') {
-        //     this.selectPage('password')
-        // }
     }
 
     updatedProperty() {
@@ -442,6 +523,16 @@ class CreateAccountSection extends connect(store)(LitElement) {
 
     createAccount() {
 
+    }
+
+    async downloadBackup(wallet) {
+
+        const state = store.getState()
+        const data = await wallet.generateSaveWalletData(this._pass, state.config.crypto.kdfThreads, () => { })
+        const dataString = JSON.stringify(data)
+
+        const blob = new Blob([dataString], { type: 'text/plain;charset=utf-8' })
+        FileSaver.saveAs(blob, `qortal_backup_${wallet.addresses[0].address}.json`)
     }
 }
 

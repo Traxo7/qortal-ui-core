@@ -1,51 +1,74 @@
 import { store } from '../store.js'
-import { doAddPluginUrl } from '../redux/app/app-actions.js'
-// import * as api from '../qora/api.js'
-// import * as api from '../api/api.js'
+import { doAddPluginUrl, doUpdateBlockInfo, doUpdateNodeStatus, doUpdateNodeInfo, doSetNode, doPageUrl, doSetChatHeads, doUpdateAccountInfo } from '../redux/app/app-actions.js'
 import * as api from 'qortal-ui-crypto'
 import { requestTransactionDialog } from '../functional-components/confirm-transaction-dialog.js'
+import { doNewMessage } from '../notifications/controller.js';
+import snackbar from '../functional-components/snackbar.js';
+import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../localStorageHelpers.js'
 
 const createTransaction = api.createTransaction
 const processTransaction = api.processTransaction
-// import { createTransaction } from '../api/createTransaction.js'
-// import { createTransaction } from 'qortal-ui-crypto'
+const signChatTransaction = api.signChatTransaction
 
 export const routes = {
     hello: async req => {
         return 'Hello from awesomeness'
     },
 
-    pluginsLoaded: async req => {
-        // Hmmm... not sure what this one does
-    },
-
     registerUrl: async req => {
-        // console.log('REGISTER URL REQUEST YASSSSS', req)
-        const { url, title, menus, icon, domain, page, parent = false } = req.data
-        store.dispatch(doAddPluginUrl({
-            url,
-            domain,
-            title,
-            menus,
-            icon,
-            page,
-            parent
-        }))
+        store.dispatch(doAddPluginUrl(req.data))
     },
 
-    registerTopMenuModal: async req => {
-        // const { icon, frameUrl, text } = req
-        // Leave as not implemented for now, don't need cause we are using a normal page for send money...better on mobile
+    setAccountInfo: async req => {
+        store.dispatch(doUpdateAccountInfo(req.data))
     },
 
-    addMenuItem: async req => {
-        // I assume this is...idk
+    getAccountInfo: async req => {
+
+        return store.getState().app.accountInfo
+    },
+
+    setChatHeads: async req => {
+        return store.dispatch(doSetChatHeads(req.data))
+    },
+
+    getChatHeads: async req => {
+        return store.getState().app.chatHeads
+    },
+
+    updateBlockInfo: async req => {
+        store.dispatch(doUpdateBlockInfo(req.data))
+    },
+
+    updateNodeStatus: async req => {
+        store.dispatch(doUpdateNodeStatus(req.data))
+    },
+
+    updateNodeInfo: async req => {
+        store.dispatch(doUpdateNodeInfo(req.data))
+    },
+
+    setNode: async req => {
+        store.dispatch(doSetNode(req.data))
+    },
+
+    getNodeConfig: async req => {
+        return store.getState().app.nodeConfig
+    },
+
+    setPageUrl: async req => {
+        return store.dispatch(doPageUrl(req.data))
+    },
+
+    getLocalStorage: async req => {
+        return loadStateFromLocalStorage(req.data)
+    },
+
+    setLocalStorage: async req => {
+        return saveStateToLocalStorage(req.data.key, req.data.dataObj)
     },
 
     apiCall: async req => {
-        // console.log(req.data)
-        // console.log(api.request)
-        // console.log(req)
         const url = req.data.url
         delete req.data.url
         return api.request(url, req.data)
@@ -63,21 +86,13 @@ export const routes = {
         })
     },
 
-    // Singular
-    address: async req => {
-        // nvm
-    },
 
     transaction: async req => {
-        // One moment please...this requires templates in the transaction classes
         let response
         try {
-            // const txBytes = createTransaction(req.data.type, store.getState().app.wallet._addresses[req.data.nonce].keyPair, req.data.params)
             const tx = createTransaction(req.data.type, store.getState().app.wallet._addresses[req.data.nonce].keyPair, req.data.params)
-            // console.log(api, tx, tx.signedBytes)
             await requestTransactionDialog.requestTransaction(tx)
             const res = await processTransaction(tx.signedBytes)
-            // console.log(res)
             response = {
                 success: true,
                 data: res
@@ -95,9 +110,50 @@ export const routes = {
 
     username: async req => {
         const state = store.getState()
-        // console.log(state.app.wallet.addresses[0].address, state.user.storedWallets)
         const username = state.user.storedWallets[state.app.wallet.addresses[0].address].name
-        // console.log(username)
+
         return username
+    },
+
+    chat: async req => {
+        let response
+        try {
+            const tx = createTransaction(req.data.type, store.getState().app.wallet._addresses[req.data.nonce].keyPair, req.data.params)
+
+            response = tx.chatBytes
+        } catch (e) {
+            console.error(e)
+            console.error(e.message)
+            response = false
+        }
+        return response
+    },
+
+    sign_chat: async req => {
+        let response
+        try {
+
+            const signedChatBytes = await signChatTransaction(req.data.chatBytesArray, req.data.chatNonce, store.getState().app.wallet._addresses[req.data.nonce].keyPair)
+
+            const res = await processTransaction(signedChatBytes)
+            response = res
+        } catch (e) {
+            console.error(e)
+            console.error(e.message)
+            response = false
+        }
+        return response
+    },
+
+    showNotification: async req => {
+
+        doNewMessage(req.data)
+    },
+
+    showSnackBar: async req => {
+        snackbar.add({
+            labelText: req.data,
+            dismiss: true
+        })
     }
 }

@@ -1,35 +1,12 @@
-// const config = require('../../config/config-loader.js')
 const path = require('path')
+
 const createRoutes = config => [
-    // Nope why would we need?
-    // {
-    //     method: 'GET',
-    //     path: '/src/{param*}',
-    //     handler: {
-    //         directory: {
-    //             path: './src',
-    //             redirectToSlash: true,
-    //             index: true
-    //         }
-    //     }
-    // },
-    // {
-    //     method: 'GET',
-    //     path: '/img/{param*}',
-    //     handler: {
-    //         directory: {
-    //             path: './img',
-    //             redirectToSlash: true,
-    //             index: true
-    //         }
-    //     }
-    // },
+
     {
         method: 'GET',
         path: '/img/{param*}',
         handler: {
             directory: {
-                // path: path.join(__dirname, '../../build'),
                 path: config.build.options.imgDir,
                 redirectToSlash: true,
                 index: true
@@ -80,24 +57,33 @@ const createRoutes = config => [
         handler: {
             directory: {
                 path: path.join(__dirname, '../../font'),
-                // path: config.build.options.fontDir,
                 redirectToSlash: true,
                 index: true
             }
         }
     },
-    // Don't need...I think and hope. More secure if untrusted code isn't loaded over our origins
-    // {
-    //     method: 'GET',
-    //     path: '/node_modules/{param*}',
-    //     handler: {
-    //         directory: {
-    //             path: './node_modules',
-    //             redirectToSlash: true,
-    //             index: true
-    //         }
-    //     }
-    // },
+    {
+        method: 'GET',
+        path: '/sound/{param*}',
+        handler: {
+            directory: {
+                path: path.join(__dirname, '../../sound/'),
+                redirectToSlash: true,
+                index: true
+            }
+        }
+    },
+    {
+        method: 'GET',
+        path: '/memory-pow/{param*}',
+        handler: {
+            directory: {
+                path: path.join(__dirname, '../../memory-pow/'),
+                redirectToSlash: true,
+                index: true
+            }
+        }
+    },
     {
         method: 'GET',
         path: '/getConfig',
@@ -107,8 +93,9 @@ const createRoutes = config => [
                     ...config
                 }
             }
-            delete response.config.user.tls // VERY IMPORTANT
-            delete response.config.build // meh
+
+            delete response.config.user.tls
+            delete response.config.build
             return JSON.stringify(response)
         }
     }

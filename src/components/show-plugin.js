@@ -9,7 +9,8 @@ class ShowPlugin extends connect(store)(LitElement) {
         return {
             app: { type: Object },
             pluginConfig: { type: Object },
-            url: { type: String }
+            url: { type: String },
+            linkParam: { type: String }
         }
     }
 
@@ -26,12 +27,22 @@ class ShowPlugin extends connect(store)(LitElement) {
     }
 
     render() {
-        // Let's come back to this...
-        return html`
-            <iframe src="${this.app.registeredUrls[this.url] ? `
-                ${window.location.protocol}//${window.location.hostname}:${this.config.user.server.plugin.port}/plugin/${this.app.registeredUrls[this.url].domain}/${this.app.registeredUrls[this.url].page}
-            ` : 'about:blank'}" id="showPluginFrame"></iframe>
+        const plugSrc = (myPlug) => {
 
+            return myPlug === undefined ? 'about:blank' : `${window.location.origin}/plugin/${myPlug.domain}/${myPlug.page}${this.linkParam}`;
+        }
+
+        let plugArr = []
+        this.app.registeredUrls.forEach(myPlugArr => {
+            myPlugArr.menus.length === 0 ? plugArr.push(myPlugArr) : myPlugArr.menus.forEach(i => plugArr.push(myPlugArr, i))
+        })
+
+        let myPlugObj = plugArr.find(pagePlug => {
+            return pagePlug.url === this.url
+        });
+
+        return html`
+            <iframe src="${plugSrc(myPlugObj)}" id="showPluginFrame"></iframe>
         `
     }
 
@@ -54,7 +65,6 @@ class ShowPlugin extends connect(store)(LitElement) {
         if (changedProps.has('computerUrl')) {
             if (this.computedUrl !== 'about:blank') {
                 this.loading = true
-                // this.
             }
         }
     }
@@ -62,18 +72,22 @@ class ShowPlugin extends connect(store)(LitElement) {
     stateChanged(state) {
         this.app = state.app
         this.config = state.config
+
         const split = state.app.url.split('/')
-        // ${ window.location.protocol }//${this.app.registeredUrls[this.url].url}.${window.location.hostname}:${window.location.port}
-        // this.url = split[1] === 'q' ? split[2] : 'about:blank'
-        // Need to add the port in too, in case it gets hosted not on port 80 or 443
-        // this.url = split[1] === 'app' ? split[2] : '404'
-        // Changing the url pattern
+
         if (split[0] === "" && split[1] === "app" && split[2] === undefined) {
             this.url = 'wallet'
-        } else if (split[1] === 'app') {
+            this.linkParam = ""
+        } else if (split.length === 5 && split[1] === 'app') {
             this.url = split[2]
+            this.linkParam = split[3] === undefined ? "" : "?" + split[3] + "/" + split[4]
+        }
+        else if (split[1] === 'app') {
+            this.url = split[2]
+            this.linkParam = ""
         } else {
             this.url = '404'
+            this.linkParam = ""
         }
     }
 }

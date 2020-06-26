@@ -1,17 +1,22 @@
 const path = require('path')
 
 const createCommonRoutes = require('./createCommonRoutes.js')
-// const routes = require('./commonRoutes.js')
-// const getPluginDirs = require('../getPluginDirs.js')
-// const getAirdrop = require('./getAirdrop.js')
-// const checkName = require('./checkName.js')
-// const saveEmail = require('./saveEmail.js') // Nah fam we decentralized
-// const config = require('../../config/config-loader.js')
 
 // THOUGHTS: Make all the routes support production and dev
 
 const createPrimaryRoutes = (config, plugins) => {
     const routes = createCommonRoutes(config)
+
+    let myPlugins = plugins
+
+    const pluginFolders = {}
+
+    plugins.reduce((obj, plugin) => {
+        obj[plugin.name] = plugin.folder
+        return obj
+    }, pluginFolders)
+
+
     routes.push(
         {
             method: 'GET',
@@ -25,12 +30,13 @@ const createPrimaryRoutes = (config, plugins) => {
             path: '/{path*}',
             // Make this support production and dev...
             handler: (request, h) => {
+                console.log("PARAMS-PRIMARY:  ==> ", request.params);
                 let port = request.info.host.split(':')[1]
                 const filePath = path.join(__dirname, '../../public/index.html')
                 const response = h.file(filePath, {
                     confine: true
                 })
-                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port)
+                response.header('Access-Control-Allow-Origin', request.info.host)
                 return response
             }
         },
@@ -40,7 +46,7 @@ const createPrimaryRoutes = (config, plugins) => {
             handler: (request, h) => {
                 // pluginLoader.loadPlugins()
                 // console.log(plugins)
-                return { plugins: plugins.map(p => p.name) }
+                return { plugins: myPlugins.map(p => p.name) }
             }
         },
         {
@@ -66,7 +72,7 @@ const createPrimaryRoutes = (config, plugins) => {
                     index: true
                 }
             }
-        }//,
+        },
         // {
         //     method: 'GET',
         //     path: '/getDir',
@@ -98,6 +104,60 @@ const createPrimaryRoutes = (config, plugins) => {
         //         }
         //     }
         // }
+        {
+            method: 'GET',
+            path: '/plugin/{path*}',
+            handler: (request, h) => {
+
+                let port = request.info.host.split(':')[1]
+                const plugin = request.params.path.split('/')[0]
+                console.log("PARAMS-PLUGINS:  ==> ", request.params);
+                const filePath = path.join(pluginFolders[plugin], '../', request.params.path)
+
+                const response = h.file(filePath, {
+                    confine: false
+                })
+                response.header('Access-Control-Allow-Origin', request.info.host)
+                return response
+            }
+        },
+        {
+            method: 'GET',
+            path: '/plugin/404',
+            handler: (request, h) => {
+                let port = request.info.host.split(':')[1]
+                const response = h.file(path.join(config.server.primary.page404))
+                response.header('Access-Control-Allow-Origin', request.info.host)
+                return response
+            }
+        },
+        {
+            method: 'GET',
+            path: '/qortal-components/plugin-mainjs-loader.html',
+            handler: (request, h) => {
+                let port = request.info.host.split(':')[1]
+                const response = h.file(path.join(__dirname, '../../src/plugins/plugin-mainjs-loader.html'), {
+                    confine: false
+                })
+                response.header('Access-Control-Allow-Origin', request.info.host)
+                return response
+            }
+        },
+        {
+            method: 'GET',
+            path: '/qortal-components/plugin-mainjs-loader.js',
+            handler: (request, h) => {
+                let port = request.info.host.split(':')[1]
+                const file = path.join(config.build.options.outputDir, '/plugins/plugin-mainjs-loader.js')
+
+                const response = h.file(file, {
+                    confine: false
+                })
+                response.header('Access-Control-Allow-Origin', request.info.host)
+                return response
+            }
+        },
+
     )
 
     return routes

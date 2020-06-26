@@ -55,12 +55,13 @@ const createPluginRoutes = (config, plugins) => {
             handler: (request, h) => {
                 let port = request.info.host.split(':')[1]
                 const plugin = request.params.path.split('/')[0]
+                console.log("PARAMS-PLUGINS:  ==> ", request.params);
                 const filePath = path.join(pluginFolders[plugin], '../', request.params.path)
 
                 const response = h.file(filePath, {
                     confine: false
                 })
-                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port) // Should be
+                response.header('Access-Control-Allow-Origin', request.info.remoteAddress + ':' + port)
                 return response
             }
         },
@@ -76,7 +77,7 @@ const createPluginRoutes = (config, plugins) => {
         },
         {
             method: 'GET',
-            path: '/frag-components/plugin-mainjs-loader.html',
+            path: '/qortal-components/plugin-mainjs-loader.html',
             handler: (request, h) => {
                 let port = request.info.host.split(':')[1]
                 const response = h.file(path.join(__dirname, '../../src/plugins/plugin-mainjs-loader.html'), {
@@ -88,7 +89,7 @@ const createPluginRoutes = (config, plugins) => {
         },
         {
             method: 'GET',
-            path: '/frag-components/plugin-mainjs-loader.js',
+            path: '/qortal-components/plugin-mainjs-loader.js',
             handler: (request, h) => {
                 let port = request.info.host.split(':')[1]
                 const file = path.join(config.build.options.outputDir, '/plugins/plugin-mainjs-loader.js')

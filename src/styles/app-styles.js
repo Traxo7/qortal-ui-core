@@ -1,14 +1,11 @@
 import { LitElement, html } from 'lit-element'
-// import { connect } from 'pwa-helpers'
-// import { store } from '../store.js'
 
 // import '../styles/styles.scss'
 import './styles.scss'
 import './app-theme.js'
 
-// class AppStyles extends connect(store)(LitElement) {
 class AppStyles extends LitElement {
-// static get styles () {
+    // static get styles () {
     //     return [
     //         css`
     //             html, * {
@@ -19,11 +16,11 @@ class AppStyles extends LitElement {
     // }
 
     /* Disable shadow DOM, so that the styles DO bleed */
-    createRenderRoot () {
+    createRenderRoot() {
         return this
     }
 
-    render () {
+    render() {
         return html`
             <style>
                 /* NOT THE IDEAL SOLUTION. Would be better to compile sass and inline it here...
@@ -57,7 +54,7 @@ class AppStyles extends LitElement {
         `
     }
 
-    constructor () {
+    constructor() {
         super()
         this.windowHeight = html`100vh`
         window.addEventListener('resize', () => this._windowResized())
@@ -65,7 +62,7 @@ class AppStyles extends LitElement {
     }
 
     // For mobile chrome's address bar
-    _windowResized () {
+    _windowResized() {
         const ua = navigator.userAgent
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)
         // console.log(isMobile, 'MOBILE')

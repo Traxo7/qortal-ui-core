@@ -63,7 +63,7 @@ class SnackQueue extends LitElement {
         this._labelText = item.labelText || ''
         this._action = item.action || ''
         this._dismiss = item.dismiss || false
-        this._dismissIcon = item.dismissIcon || 'keyboard_arrow_down'
+        this._dismissIcon = item.dismissIcon || 'close' // keyboard_arrow_down
         this._leading = !!item.leading
         this._closeOnEscape = (item.closeOnEscape && item.closeOnEscape !== false) // JSON.parse maybe needs to be compared to 'false'...in which case no need for complex expression
         this._timeoutMs = (item.timeoutMs >= 4000 && item.timeoutMs <= 10000) ? item.timeoutMs : 5000

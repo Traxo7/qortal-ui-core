@@ -6,78 +6,238 @@ import '@material/mwc-icon'
 import '@polymer/paper-ripple'
 
 class SidenavMenu extends connect(store)(LitElement) {
-    static get properties() {
-        return {
-            config: { type: Object },
-            urls: { type: Object }// ,
-            // menuItemClick: { type: Function }
+  static get properties() {
+    return {
+      config: { type: Object },
+      urls: { type: Object }
+    }
+  }
+
+  static get styles() {
+    return [
+      css`
+        .mcd-menu {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          background: #FFF;
+          border-radius: 2px;
+          -moz-border-radius: 2px;
+          -webkit-border-radius: 2px;
+          width: 100%;
+          outline: none;
         }
-    }
+        .mcd-menu li {
+          position: relative;
+          /* height:48px; */
+          line-height: 48px;
+          outline: none;
+          padding: 2px;
+          list-style: none;
+        }
+        .mcd-menu li a {
+          display: block;
+          text-decoration: none;
+          padding-left: 20px;
+          color: var(--mdc-theme-on-surface);
+          text-align: left;
+          height: 48px;
+          position: relative;
+          border-bottom: 1px solid #EEE;
+          outline: none;
+        }
+        .mcd-menu li a mwc-icon {  
+          float: left;
+          margin: 0 10px 0 0;
+          padding-top: 14px;
+          padding-right: 9px;
+        }
 
-    static get styles() {
-        return [
-            css`
-                ul#sideNavMenu {
-                    padding:0;
-                    margin:0;
-                }
+        .mcd-menu li a span {
+          display: block;
+          text-transform: uppercase;
+          outline: none;
+        }
 
-                ul#sideNavMenu li {
-                    list-style: none;
-                    position: relative;
-                    height:48px;
-                    line-height:48px;
-                }
+        .mcd-menu li a small {
+          display: block;
+          font-size: 10px;
+          outline: none;
+        }
 
-                ul#sideNavMenu li a {
-                    text-decoration: none;
-                    color: var(--mdc-theme-on-surface);
-                    display: block;
-                    padding-left:24px;
-                    width: auto;
-                }
-                ul#sideNavMenu li a mwc-icon {
-                    vertical-align: top;
-                    padding-top: 12px;
-                    padding-right: 18px;
-                }
-            `
-        ]
-    }
-    // .menuItemClick=${() => this.shadowRoot.getElementById('appdrawer').close()}
+        .mcd-menu li:hover > a mwc-icon {
+            opacity: 1;
+        }
+        .mcd-menu li:hover a span {
+            opacity: 1;
+            outline: none;
+        }
 
-    render() {
-        return html`
+        .mcd-menu li:hover > a {
+            background: #f8f8f8;
+            color: #515151;
+        }
+        .mcd-menu li a.active {
+          position: relative;
+          color: #515151;
+          background-color: #eee;
+          outline: none;
+        }
+        .mcd-menu li a.active:before {
+          content: "";
+          position: absolute;
+          top: 42%;
+          left: 0;
+          border-left: 5px solid #515151;
+          border-top: 5px solid transparent;
+          border-bottom: 5px solid transparent;
+          outline: none;
+        }
+
+        .mcd-menu li a.active:after {
+          content: "";
+          position: absolute;
+          top: 42%;
+          right: 0;
+          border-right: 5px solid #515151;
+          border-top: 5px solid transparent;
+          border-bottom: 5px solid transparent;
+          outline: none;
+        }
+
+        .mcd-menu li ul,
+        .mcd-menu li ul li ul {
+          position: absolute;
+          height: auto;
+          min-width: 240px;
+          padding: 0;
+          margin: 0;
+          background: #FFF;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 300ms linear;
+          -o-transition: all 300ms linear;
+          -ms-transition: all 300ms linear;
+          -moz-transition: all 300ms linear;
+          -webkit-transition: all 300ms linear;
+          z-index: 999999999;
+          left:280px;
+          top: 0px;
+          border-left: 4px solid #515151;
+          outline: none;
+        }
+        .mcd-menu li ul:before {
+          content: "";
+          position: absolute;
+          top: 25px;
+          left: -9px;
+          border-right: 5px solid #515151;
+          border-bottom: 5px solid transparent;
+          border-top: 5px solid transparent;
+          outline: none;
+        }
+        .mcd-menu li:hover > ul,
+        .mcd-menu li ul li:hover > ul {
+          display: block;
+          opacity: 1;
+          visibility: visible;
+          left:260px;
+          outline: none;
+        }
+
+        .mcd-menu li ul li a {
+          /* padding: 10px; */
+          text-align: left;
+          border: 0;
+          border-bottom: 1px solid #EEE;
+          height: auto;
+          outline: none;
+        }
+        .mcd-menu li ul li a mwc-icon {
+          /* font-size: 16px; */
+          display: inline-block;
+          margin: 0 10px 0 0;
+        }
+        .mcd-menu li ul li ul {
+          left: 230px;
+          top: 0;
+          border: 0;
+          border-left: 4px solid #515151;
+          outline: none;
+        }  
+        .mcd-menu li ul li ul:before {
+          content: "";
+          position: absolute;
+          top: 15px;
+          left: -9px;
+          border-right: 5px solid #515151;
+          border-bottom: 5px solid transparent;
+          border-top: 5px solid transparent;
+          outline: none;
+        }
+        .mcd-menu li ul li:hover > ul {
+          top: 0px;
+          left: 200px;
+          outline: none;
+        }
+      `
+    ]
+  }
+
+  constructor() {
+    super()
+  }
+
+  render() {
+    return html`
             <style>
 
             </style>
             
             <div>
-                <ul id="sideNavMenu">
-                    ${Object.entries(this.urls).map(([url, urlInfo]) => html`
-                        <!-- Now to make the router interpret this url to meaning iframe src = url.page -->
-                        <li @click=${() => this.menuItemClick()}>
+                <ul class="mcd-menu">
+                    ${this.urls.map(myPlugin => myPlugin.menus.length === 0 ? html`
+                        <li>
                             <paper-ripple></paper-ripple>
-                            <!-- <a href="/${this.config.coin.baseUrl}/${url}"> -->
-                            <a href="/app/${url}"> <!-- No /plugin ? How about /q/...seems qortalish -->
-                                <mwc-icon>${urlInfo.icon}</mwc-icon>
-                                <span>${urlInfo.title}</span>
+                            <a href="/app/${myPlugin.url}">
+                                <mwc-icon>${myPlugin.icon}</mwc-icon>
+                                <span>${myPlugin.title}</span>
                             </a>
+                        </li>
+                    ` : html`
+                        <li>
+                            <paper-ripple></paper-ripple>
+                            <a href="/app/${myPlugin.url}">
+                                <mwc-icon>${myPlugin.icon}</mwc-icon>
+                                <span>${myPlugin.title}</span>
+                            </a>
+                            
+                            <ul>
+                                ${myPlugin.menus.map(myMenu => html`
+                                    <li>
+                                        <paper-ripple></paper-ripple>
+                                        <a href="/app/${myMenu.url}">
+                                            <mwc-icon>${myMenu.icon}</mwc-icon>
+                                            <span>${myMenu.title}</span>
+                                        </a>
+                                    </li>
+                                `)}
+                            </ul>
                         </li>
                     `)}
                 </ul>
             </div>
         `
-    }
+  }
 
-    menuItemClick() {
-        //
-    }
+  firstUpdated() {
+    // ...
+  }
 
-    stateChanged(state) {
-        this.config = state.config
-        this.urls = state.app.registeredUrls
-    }
+  stateChanged(state) {
+    this.config = state.config
+    this.urls = state.app.registeredUrls
+  }
 }
 
 window.customElements.define('sidenav-menu', SidenavMenu)

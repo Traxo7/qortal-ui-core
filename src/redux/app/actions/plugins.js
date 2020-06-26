@@ -1,9 +1,7 @@
-// import { addPluginRoutes } from '../../../plugins/addPluginRoutes.js'
-import { ADD_PLUGIN, ADD_PLUGIN_URL } from '../app-action-types.js'
-// BOUND action creator
-export const doAddPluginUrl = (urlOptions) => {
+import { ADD_PLUGIN, ADD_PLUGIN_URL, PAGE_URL } from '../app-action-types.js'
+export const doAddPluginUrl = (pluginUrlsConf) => {
     return (dispatch, getState) => {
-        dispatch(addPluginUrl(urlOptions))
+        dispatch(addPluginUrl(pluginUrlsConf))
     }
 }
 
@@ -15,7 +13,7 @@ const addPluginUrl = (payload) => {
 }
 
 export const doAddPlugin = (epmlInstance) => {
-    // Add the appropriate routes here
+
     return (dispatch, getState) => {
         dispatch(addPlugin(epmlInstance))
     }
@@ -24,6 +22,19 @@ export const doAddPlugin = (epmlInstance) => {
 const addPlugin = (payload) => {
     return {
         type: ADD_PLUGIN,
+        payload
+    }
+}
+
+export const doPageUrl = (pageUrl) => {
+    return (dispatch, getState) => {
+        dispatch(myPageUrl(pageUrl))
+    }
+}
+
+const myPageUrl = (payload) => {
+    return {
+        type: PAGE_URL,
         payload
     }
 }

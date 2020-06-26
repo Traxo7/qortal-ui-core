@@ -1,15 +1,11 @@
 export const LOAD_CONFIG_FROM_API = 'LOAD_CONFIG_FROM_API'
-export const SET_NODE = 'SET_NODE'
-export const ADD_NODE = 'ADD_NODE'
 
 const configUrl = '/getConfig'
 
-// This is an action creator... it takes dispatch and getState, and then uses dispatch to dispatch the actual action. loadConfigFromAPI is the actual action
 export const doLoadConfigFromAPI = () => {
-    // console.log('do load config')
+
     return (dispatch, getState) => {
-        // console.log(getState().config.loaded, 'test1')
-        if (getState().config.loaded) return dispatch(loadConfigFromAPI('success')) // Already loaded :)..not needed...this could still be used to reset config from the api
+        if (getState().config.loaded) return dispatch(loadConfigFromAPI('success'))
         dispatch(loadConfigFromAPI())
         fetch(configUrl)
             .then(res => res.json())
@@ -25,19 +21,6 @@ const loadConfigFromAPI = (status, payload) => {
     return {
         type: LOAD_CONFIG_FROM_API,
         status,
-        payload
-    }
-}
-
-export const doSetNode = (nodeIndex) => {
-    return (dispatch, getState) => {
-        dispatch(setNode(nodeIndex))
-    }
-}
-
-const setNode = (payload) => {
-    return {
-        type: SET_NODE,
         payload
     }
 }

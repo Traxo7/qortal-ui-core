@@ -31,23 +31,48 @@ const os = require('os');
 
 
 const user = {
-    // New
-    node: 0,
+    // TestNet [0], MainNet [1], other nodes will come in future...
+    node: 1,
     knownNodes: [
         {
             protocol: 'http',
-            port: 12391,
             domain: '127.0.0.1',
+            port: 62391,
             enableManagement: true
         },
         {
             protocol: 'http',
-            domain: '51.83.114.66',
-            port: 62391
+            domain: '127.0.0.1',
+            port: 12391,
+            enableManagement: true
+        },
+        {
+            protocol: 'http',
+            domain: 'node1.qortal.org',
+            port: 62391,
+            enableManagement: false
+        },
+        {
+            protocol: 'http',
+            domain: 'node1.qortal.org',
+            port: 12391,
+            enableManagement: false
+        },
+        {
+            protocol: 'http',
+            domain: 'node2.qortal.org',
+            port: 62391,
+            enableManagement: false
+        },
+        {
+            protocol: 'http',
+            domain: 'node2.qortal.org',
+            port: 12391,
+            enableManagement: false
         }
     ],
     nodeSettings: {
-        pingInterval: 10 * 60 * 1000
+        pingInterval: 10 * 1000 // (10 secs)
     },
     // End new
     version: process.env.npm_package_version,

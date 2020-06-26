@@ -9,6 +9,7 @@ import '@polymer/paper-icon-button/paper-icon-button.js'
 import '@polymer/iron-icons/iron-icons.js'
 
 import './wallet-profile.js'
+import './app-info.js'
 import './sidenav-menu.js'
 import './show-plugin.js'
 
@@ -30,12 +31,12 @@ import './app-box/app-box.js';
 import { doLogout } from '../redux/app/app-actions.js'
 
 class AppView extends connect(store)(LitElement) {
-    static get properties () {
+    static get properties() {
         return {
             loggedIn: {
                 type: Boolean,
                 hasChanged: (some, thing) => {
-                // console.log('loggedIn CHANGED!!!', some, thing)
+                    // console.log('loggedIn CHANGED!!!', some, thing)
                 }
             },
             config: { type: Object },
@@ -43,7 +44,7 @@ class AppView extends connect(store)(LitElement) {
         }
     }
 
-    static get styles () {
+    static get styles() {
         return [
             css`
             :host {
@@ -69,7 +70,7 @@ class AppView extends connect(store)(LitElement) {
         ]
     }
 
-    render () {
+    render() {
         return html`
         <style>
 
@@ -83,6 +84,7 @@ class AppView extends connect(store)(LitElement) {
 
                     <sidenav-menu drawer-toggle></sidenav-menu>
 
+                    <app-info></app-info>
                 </app-header-layout>
             </app-drawer>
 
@@ -122,23 +124,23 @@ class AppView extends connect(store)(LitElement) {
     `
     }
 
-    constructor () {
+    constructor() {
         super()
         // console.log('loading plugins')
         loadPlugins()
     }
 
-    firstUpdated () {
-    //
+    firstUpdated() {
+        //
     }
 
-    stateChanged (state) {
+    stateChanged(state) {
         this.loggedIn = state.app.loggedIn
         this.config = state.config
         this.urls = state.app.registeredUrls
     }
 
-    async logout (e) {
+    async logout(e) {
         console.log('LOGGIN OUTTT')
         // Add a glorious animation please!
         store.dispatch(doLogout())

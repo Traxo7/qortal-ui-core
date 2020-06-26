@@ -7,14 +7,13 @@ Epml.registerPlugin(EpmlWorkerPlugin)
 export const doInitWorkers = (numberOfWorkers, workerURL) => {
     const workers = []
     return (dispatch, getState) => {
-        dispatch(initWorkers()) // loading
+        dispatch(initWorkers())
         try {
             for (let i = 0; i < numberOfWorkers; i++) {
                 workers.push(new Epml({ type: 'WORKER', source: new Worker(workerURL) }))
             }
             Promise.all(workers.map(workerEpml => workerEpml.ready()))
                 .then(() => {
-                    // console.log('All workers ready')
                     dispatch(initWorkers('success', workers))
                 })
         } catch (e) {
