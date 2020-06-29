@@ -18,16 +18,7 @@ import '@material/mwc-top-app-bar'
 
 import '@polymer/app-layout/app-layout.js'
 import '@polymer/paper-ripple'
-/* Should probably only import the parts I need
-import './helpers/helpers.js';
-import './app-drawer/app-drawer.js';
-import './app-drawer-layout/app-drawer-layout.js';
-import './app-grid/app-grid-style.js';
-import './app-header/app-header.js';
-import './app-header-layout/app-header-layout.js';
-import './app-toolbar/app-toolbar.js';
-import './app-box/app-box.js';
-*/
+
 import { doLogout } from '../redux/app/app-actions.js'
 
 class AppView extends connect(store)(LitElement) {
