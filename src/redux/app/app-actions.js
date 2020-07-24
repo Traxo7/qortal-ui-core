@@ -12,9 +12,8 @@ export const doNavigate = loca => {
     }
 }
 
-// Action creator
 const navigate = loca => {
-    // Action
+
     return {
         type: NAVIGATE,
         url: loca.pathname
@@ -22,6 +21,7 @@ const navigate = loca => {
 }
 
 export const updateNetworkConnectionStatus = status => {
+
     return {
         type: NETWORK_CONNECTION_STATUS,
         payload: status

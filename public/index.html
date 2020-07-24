@@ -2,12 +2,8 @@
 <html lang="en-us">
 
 <head>
-
-    <script>this.customElements || document.write('<script src="//unpkg.com/document-register-element"><\x2fscript>');</script>
-    <script src="//unpkg.com/@ungap/custom-elements-builtin"></script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="Description" content="Cryptocurrency wallet">
+    <meta name="Description" content="Qortal Cryptocurrency Wallet and User Interface (UI)">
 
     <link rel="apple-touch-icon" sizes="57x57" href="/img/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon/apple-icon-60x60.png">
@@ -30,24 +26,25 @@
 
     <style>
         html {
-            --scrollbarBG: #CFD8DC;
-            --thumbBG: #90A4AE;
+            --scrollbarBG: #a1a1a1;
+            --thumbBG: #6a6c75;
+            overflow: hidden;
         }
 
-        body::-webkit-scrollbar {
+        *::-webkit-scrollbar {
             width: 11px;
         }
 
-        body {
+        * {
             scrollbar-width: thin;
             scrollbar-color: var(--thumbBG) var(--scrollbarBG);
         }
 
-        body::-webkit-scrollbar-track {
+        *::-webkit-scrollbar-track {
             background: var(--scrollbarBG);
         }
 
-        body::-webkit-scrollbar-thumb {
+        *::-webkit-scrollbar-thumb {
             background-color: var(--thumbBG);
             border-radius: 6px;
             border: 3px solid var(--scrollbarBG);
@@ -58,22 +55,7 @@
             margin: 0;
             padding: 0;
             background: #eee;
-        }
-
-        #notification {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 200px;
-            padding: 20px;
-            border-radius: 5px;
-            background-color: white;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            z-index: 99999999;
-        }
-
-        .hidden {
-            display: none;
+            overflow: hidden;
         }
     </style>
     <link rel="stylesheet" href="/build/styles.bundle.css">
@@ -82,14 +64,6 @@
 
 
     <script>
-        // Let's not spend time on this right now. Initial load is quick, just be happy with that for now
-        // Check that service workers are registered
-        // if ('serviceWorker' in navigator) {
-        //     // Use the window load event to keep the page load performant
-        //     window.addEventListener('load', () => {
-        //         navigator.serviceWorker.register('/src/service-worker.js');
-        //     });
-        // }
 
         const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
         const heap = new Uint8Array(memory.buffer);
@@ -133,27 +107,14 @@
                 window.heap = heap
                 window.powInstance = wasmModule.instance;
                 window.computePow = wasmModule.exports.compute2;
-
-            }
-            );
+            });
 
     </script>
-
-    <!-- Trash browser polyfills -->
-    <script>
-        if (typeof Promise === 'undefined') document.write('<script src="/bluebird/js/browser/bluebird.core.js"><\/script>');
-        if (typeof fetch === 'undefined') document.write('<script src="/whatwg-fetch/dist/fetch.umd.js"><\/script>');
-    </script>
-    <script nomodule src="/systemjs/dist/s.js"></script>
 </head>
 
 <body>
-    <!-- styles all dialogs etc too -->
     <app-styles></app-styles>
     <main>
-
-        <!-- APP VERSION -->
-        <!-- <h1 id="version"></h1> -->
 
         <noscript>
             You need to enable JavaScript to run this app. 😞
@@ -163,23 +124,7 @@
 
     </main>
 
-
-    <!-- Polyfill stuff -->
-    <script>
-        /* https://github.com/webcomponents/webcomponentsjs#using-webcomponents-loaderjs */
-        window.WebComponents = window.WebComponents || {}
-        window.WebComponents.root = '/webcomponentsjs/'
-    </script>
-    <!-- <script src="/webcomponentsjs/webcomponents-loader.js"></script> -->
-    <!-- <script src="/webcomponentsjs/webcomponents-bundle.js"></script> -->
-
     <script type="module" src="/build/es6/main.js"></script>
-
-    <!-- for every crap browser... -->
-    <script nomodule>
-        System.import('/build/system/main.js')
-    </script>
-
 
 </body>
 

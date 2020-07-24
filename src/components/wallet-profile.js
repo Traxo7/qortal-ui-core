@@ -1,10 +1,6 @@
 import { LitElement, html, css } from 'lit-element'
 import { connect } from 'pwa-helpers'
 import { store } from '../store.js'
-// import download from '../api/deps/download.js'
-// import JSZip from 'jszip'
-
-// import { Epml } from '../epml'
 
 import FileSaver from 'file-saver'
 import { UPDATE_NAME_STATUSES } from '../redux/user/user-actions.js'
@@ -20,7 +16,7 @@ import '@material/mwc-dialog'
 import '@material/mwc-icon-button'
 import '@material/mwc-textfield'
 
-// const parentEpml = new Epml({ type: 'WINDOW', source: window.parent })
+import copyTextMenu from '../functional-components/copy-text-menu.js'
 
 class WalletProfile extends connect(store)(LitElement) {
     static get properties() {
@@ -46,7 +42,7 @@ class WalletProfile extends connect(store)(LitElement) {
 
     constructor() {
         super()
-        this.qoraBurnedBalance = ""
+        this.qoraBurnedBalance = ''
         this.user = {
             accountInfo: {}
         }
@@ -113,7 +109,7 @@ class WalletProfile extends connect(store)(LitElement) {
                             @click=${() => this.openModalBox()}
                             icon="info"></mwc-icon-button>
                     </span>
-                    ${this.accountInfo.addressInfo ? html`<span style="margin-bottom: 8px; display: inline-block;">Account Level - ${this.accountInfo.addressInfo.level} ${this.accountInfo.addressInfo.flags === 1 ? html`<strong>(F)</strong>` : ""}</span>` : ''}
+                    ${this.accountInfo.addressInfo ? html`<span style="margin-bottom: 8px; display: inline-block;">Account Level - ${this.accountInfo.addressInfo.level} ${this.accountInfo.addressInfo.flags === 1 ? html`<strong>(F)</strong>` : ''}</span>` : ''}
                     <p id="address">${this.wallet.addresses[0].address}</p>
                 </div>
             </div>
@@ -154,8 +150,16 @@ class WalletProfile extends connect(store)(LitElement) {
                         /* --mdc-theme-on-primary: var(--mdc-theme-error); */
                         --mdc-theme-primary: var(--mdc-theme-error);
                     }
+
+                    .modal-patch {
+                        opacity: .99
+                    }
+
+                    /* mwc-dialog {
+                        z-index: 0;
+                    } */
                 </style>
-                <mwc-dialog id="profileDialog">
+                <mwc-dialog class="modal-patch" id="profileDialog">
                     <div>
                         <div style="text-align:center">
                             <mwc-icon style="font-size:76px;" id="dialogAccountIcon">account_circle</mwc-icon>
@@ -193,11 +197,11 @@ class WalletProfile extends connect(store)(LitElement) {
                     <p>
                         Please choose a password to encrypt your backup with (this can be the same as the one you logged in with, or different)
                     </p>
-                    <mwc-textfield style="width:100%;" icon="vpn_key" id="downloadBackupPassword" label="Password"></mwc-textfield>
+                    <mwc-textfield style="width:100%;" icon="vpn_key" id="downloadBackupPassword" label="Password" type="password" ></mwc-textfield>
                     <mwc-button slot="primaryAction" class="confirm" @click=${() => this.downloadBackup()}>Go</mwc-button>
                     <mwc-button slot="secondaryAction" dialogAction="close" class="red-button">Close</mwc-button>
-                <mwc-dialog>
-
+                </mwc-dialog>>
+                
             </div>
 
             <paper-toast id="toast" horizontal-align="right" vertical-align="top" vertical-offset="64"></paper-toast>
@@ -205,14 +209,50 @@ class WalletProfile extends connect(store)(LitElement) {
         `
     }
 
-
     openModalBox() {
-
         // Call getBurnedQora
         this.getBurnedQora(this.wallet.addresses[0].address)
     }
 
+    _textMenu(event) {
+        const getSelectedText = () => {
+            var text = ''
+            if (typeof window.getSelection !== 'undefined') {
+                text = window.getSelection().toString()
+            } else if (typeof this.shadowRoot.selection !== 'undefined' && this.shadowRoot.selection.type == 'Text') {
+                text = this.shadowRoot.selection.createRange().text
+            }
+            return text
+        }
+
+        const checkSelectedTextAndShowMenu = () => {
+            const selectedText = getSelectedText()
+            if (selectedText && typeof selectedText === 'string') {
+
+                const textMenuObject = { selectedText, eventObject: event }
+                copyTextMenu.open(textMenuObject)
+            }
+        }
+
+        checkSelectedTextAndShowMenu()
+    }
+
     firstUpdated() {
+        window.addEventListener('contextmenu', (event) => {
+            event.preventDefault()
+
+            this._textMenu(event)
+        })
+
+        window.addEventListener('click', () => {
+            copyTextMenu.close()
+        })
+
+        window.onkeyup = (e) => {
+            if (e.keyCode === 27) {
+                copyTextMenu.close()
+            }
+        }
 
         const container = document.body.querySelector('main-app').shadowRoot.querySelector('app-view').shadowRoot
         const dialogs = this.shadowRoot.getElementById('dialogs')
@@ -224,7 +264,6 @@ class WalletProfile extends connect(store)(LitElement) {
         const isMobile = window.matchMedia(`(max-width: ${getComputedStyle(document.body).getPropertyValue('--layout-breakpoint-tablet')})`).matches
 
         if (isMobile) {
-
             toast.verticalAlign = 'bottom'
             toast.verticalOffset = 0
         }
@@ -232,22 +271,18 @@ class WalletProfile extends connect(store)(LitElement) {
     }
 
     getBurnedQora(address) {
-
-        let myNode = this.nodeConfig.knownNodes[this.nodeConfig.node]
-        let nodeUrl = myNode.protocol + '://' + myNode.domain + ":" + myNode.port
+        const myNode = this.nodeConfig.knownNodes[this.nodeConfig.node]
+        const nodeUrl = myNode.protocol + '://' + myNode.domain + ':' + myNode.port
 
         fetch(`${nodeUrl}/addresses/balance/${address}?assetId=1`).then(res => {
-
             return res.json()
         }).then(data => {
-
-            this.qoraBurnedBalance = data;
+            this.qoraBurnedBalance = data
             this.dialog.show()
         })
     };
 
     async downloadBackup() {
-
         const state = store.getState()
         const password = this.dialogContainer.getElementById('downloadBackupPassword').value
 
@@ -259,7 +294,6 @@ class WalletProfile extends connect(store)(LitElement) {
     }
 
     stateChanged(state) {
-
         this.loggedIn = state.app.loggedIn
         this.config = state.config
         this.user = state.user

@@ -8,19 +8,16 @@ const DEFAULT_INITIAL_STATE = {
     styles: {
         breakpoints: {},
         theme: {
-            color: 'green', // Not sure this is a thing,
+            color: 'green',
             colors: {}
         }
     },
     coin: {
         name: ''
     },
-    // server: {},
     user: {
-        // Wrong place I think...?
         language: 'english',
         theme: 'light',
-        // This should probably move? Or maybe not.
         server: {},
         node: 0,
         knownNodes: [{}]

@@ -3,7 +3,6 @@ import { connect } from 'pwa-helpers'
 import { store } from '../store.js'
 
 import { listenForRequest } from '../transactionRequest.js'
-// import { listenForRequest } from '../../transactionRequest.js'
 
 import '@polymer/paper-dialog/paper-dialog.js'
 import '@material/mwc-button'
@@ -51,7 +50,7 @@ class ConfirmTransactionDialog extends connect(store)(LitElement) {
                 
             </style>
 
-            <paper-dialog id="james" modal>
+            <paper-dialog id="confirmDialog" modal>
                 <h2>Transaction request</h2>
                 <div id="txInfo">
                     ${this.txInfo}
@@ -69,10 +68,10 @@ class ConfirmTransactionDialog extends connect(store)(LitElement) {
     }
 
     requestTransaction(transaction) {
-        this.shadowRoot.getElementById('james').open()
+        this.shadowRoot.getElementById('confirmDialog').open()
         this.transaction = transaction
         this.txInfo = transaction.render(html)
-        // console.log(this.txInfo)
+
         return new Promise((resolve, reject) => {
             this._resolve = resolve
             this._reject = reject
@@ -86,16 +85,7 @@ class ConfirmTransactionDialog extends connect(store)(LitElement) {
     }
 
     decline(e) {
-        // this._resolve({
-        //     success: false,
-        //     reason: 'User declined transaction'
-        // })
-        // or...?
-        // this._reject({
-        //     success: false,
-        //     reason: 'User declined transaction'
-        // })
-        // Or just
+
         this._reject(new Error('User declined transaction'))
     }
 }

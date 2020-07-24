@@ -18,8 +18,6 @@ import '@polymer/paper-spinner/paper-spinner-lite.js'
 
 import { doLogin, doSelectAddress } from '../../redux/app/app-actions.js'
 import { doStoreWallet } from '../../redux/user/user-actions.js'
-// import { doUpdateAccountInfo } from '../../redux/user/actions/update-account-info.js'
-// import { doUpdateAccountName } from '../../redux/user/user-actions.js'
 
 import { createWallet } from 'qortal-ui-crypto'
 
@@ -44,7 +42,6 @@ class LoginSection extends connect(store)(LitElement) {
             selectedPage: { type: String },
             wallets: { type: Object },
             loginErrorMessage: { type: String },
-            saveInBrowser: { type: Boolean },
             hasStoredWallets: { type: Boolean },
             saveInBrowser: { type: Boolean },
             backedUpWalletJSON: { type: Object },
@@ -275,7 +272,6 @@ class LoginSection extends connect(store)(LitElement) {
                         <div page="backedUpSeed">
                             ${!this.backedUpSeedLoading ? html`
                                 <h3>Upload your qortal backup</h3>
-                                <!-- (qortal_backup_Q123456789abcdefghkjkmnpqrs.json) -->
                                 <frag-file-input accept=".zip,.json" @file-read-success="${e => this.loadBackup(e.detail.result)}"></frag-file-input>
                             ` : html`
                                 <paper-spinner-lite active style="display: block; margin: 0 auto;"></paper-spinner-lite>
@@ -302,7 +298,6 @@ class LoginSection extends connect(store)(LitElement) {
                         ${this.loginErrorMessage}
                     </div>
                         ${this.showPasswordCheckboxPages.includes(this.selectedPage) ? html`
-                            <!-- Remember me checkbox and fields-->
                             <div style="text-align:right; min-height:40px;">
                                 <p style="vertical-align: top; line-height: 40px; margin:0;">
                                     <label
@@ -316,9 +311,6 @@ class LoginSection extends connect(store)(LitElement) {
                         ` : ''}
                     </div>
                 </div>
-
-                <!-- Passes this.selectedPage to trigger updates -->
-
             </div>
         `
     }
@@ -334,7 +326,7 @@ class LoginSection extends connect(store)(LitElement) {
                 this.updateNext()
                 this.shadowRoot.querySelector('#nameInput').value = ''
                 this.shadowRoot.querySelector('#password').value = ''
-                this.loginErrorMessage = ""
+                this.loginErrorMessage = ''
             }
         })
     }
@@ -499,9 +491,8 @@ class LoginSection extends connect(store)(LitElement) {
 
                         if (!storedWalletAddress) {
                             if (this.saveInBrowser && type !== 'storedWallet') {
+                                store.dispatch(doStoreWallet(wallet, source.password, source.name, () => {
 
-                                store.dispatch(doStoreWallet(wallet, source.password, source.name /* username */, () => {
-                                    // this.loadingRipple.loadingMessage = status
                                     ripple.loadingMessage = status
                                 })).catch(err => console.error(err))
                             }

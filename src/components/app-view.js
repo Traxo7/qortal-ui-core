@@ -2,9 +2,6 @@ import { LitElement, html, css } from 'lit-element'
 import { connect } from 'pwa-helpers'
 import { store } from '../store.js'
 
-import { loadPlugins } from '../plugins/load-plugins.js'
-
-// import '@material/mwc-icon'
 import '@polymer/paper-icon-button/paper-icon-button.js'
 import '@polymer/iron-icons/iron-icons.js'
 
@@ -14,24 +11,16 @@ import './sidenav-menu.js'
 import './show-plugin.js'
 
 import '@material/mwc-drawer'
-import '@material/mwc-top-app-bar'
 
 import '@polymer/app-layout/app-layout.js'
 import '@polymer/paper-ripple'
 
-import { doLogout } from '../redux/app/app-actions.js'
+import './settings-view/user-settings.js'
 
 class AppView extends connect(store)(LitElement) {
     static get properties() {
         return {
-            loggedIn: {
-                type: Boolean,
-                hasChanged: (some, thing) => {
-                    // console.log('loggedIn CHANGED!!!', some, thing)
-                }
-            },
-            config: { type: Object },
-            urls: { type: Object }
+            config: { type: Object }
         }
     }
 
@@ -66,7 +55,6 @@ class AppView extends connect(store)(LitElement) {
         <style>
 
         </style>
-        <!--style="height: var(--window-height);" -->
         <app-drawer-layout responsive-width='${getComputedStyle(document.body).getPropertyValue('--layout-breakpoint-desktop')}' fullbleed >
             <app-drawer swipe-open slot="drawer" id="appdrawer">
                 <app-header-layout>
@@ -81,7 +69,7 @@ class AppView extends connect(store)(LitElement) {
 
             <app-header-layout style="height: var(--window-height);">
 
-                <app-header id='appHeader' slot="header" fixedd>
+                <app-header id='appHeader' slot="header" fixed>
                     <app-toolbar>
 
                         <paper-icon-button class="menu-toggle-button" drawer-toggle icon="menu"></paper-icon-button>
@@ -89,36 +77,26 @@ class AppView extends connect(store)(LitElement) {
                         <div main-title>
                             <span class="qora-title">
                                 <img src="${this.config.coin.logo}" style="height:32px; padding-left:12px;">
-                                <!-- &nbsp;${this.config.coin.name} -->
                             </span>
-
-                            <small>
-                                <!-- <i>{{ route.path }}#{{ hashRoute.path }}</i> -->
-                            </small>
                         </div>
 
-                        <template is="dom-repeat" items="{{topMenuItems}}">
-                            <paper-button style="font-size:16px; height:40px;" on-tap="_openTopMenuModal">{{ item.text }}&nbsp;<iron-icon icon="{{item.icon}}"></iron-icon></paper-button>
-                        </template>
-
                         <div style="display:inline">
-                            <!-- <paper-icon-button icon="icons:settings" on-tap="openSettings"></paper-icon-button> -->
-                                <paper-icon-button title="Log out" icon="icons:power-settings-new" style="background:#fff; border-radius:50%;" @click=${e => this.logout(e)}></paper-icon-button>
+                            <paper-icon-button icon="icons:settings" @click=${ () => this.openSettings()} title="Settings" ></paper-icon-button>
                         </div>
                     </app-toolbar>
                 </app-header>
 
-                <show-plugin size='100' logged-in="{{loggedIn}}" config="{{config}}" current-plugin-frame="{{currentPluginFrame}}" route="{{route}}" data="{{routeData}}" subroute="{{subroute}}" url="{{activeUrl}}"></show-plugin>
+                <show-plugin></show-plugin>
                     
-            </app-header-layout >
-        </app-drawer-layout >
+            </app-header-layout>
+        </app-drawer-layout>
+        <user-settings></user-settings>
     `
     }
 
     constructor() {
         super()
-        // console.log('loading plugins')
-        loadPlugins()
+
     }
 
     firstUpdated() {
@@ -126,15 +104,13 @@ class AppView extends connect(store)(LitElement) {
     }
 
     stateChanged(state) {
-        this.loggedIn = state.app.loggedIn
         this.config = state.config
-        this.urls = state.app.registeredUrls
     }
 
-    async logout(e) {
-        console.log('LOGGIN OUTTT')
-        // Add a glorious animation please!
-        store.dispatch(doLogout())
+    openSettings() {
+
+        const settingsDialog = document.getElementById('main-app').shadowRoot.querySelector('app-view').shadowRoot.querySelector('user-settings')
+        settingsDialog.openSettings()
     }
 }
 

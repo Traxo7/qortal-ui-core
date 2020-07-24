@@ -34,8 +34,8 @@ class WelcomePage extends LitElement {
     constructor() {
         super()
         this.hideNav = true
-        this.nextText = 'prrrr'
-        const welcomeMessage = 'Welcome to Qortal' // Should be from config
+        this.nextText = ''
+        const welcomeMessage = 'Welcome to Qortal';
         this.welcomeMessage = welcomeMessage
     }
 
@@ -82,7 +82,6 @@ class WelcomePage extends LitElement {
     next() { }
 
     navigate(page) {
-
         this.dispatchEvent(new CustomEvent('navigate', {
             detail: { page },
             bubbles: true,

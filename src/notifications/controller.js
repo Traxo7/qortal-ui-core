@@ -1,45 +1,30 @@
-import config from './config';
-import { dispatcher } from './dispatcher';
-import snackbar from '../functional-components/snackbar.js';
-import { NEW_MESSAGE } from './types';
+import config from './config'
+import { dispatcher } from './dispatcher'
+import snackbar from '../functional-components/snackbar.js'
+import { NEW_MESSAGE } from './types'
 
 let initial = 0
 let _state
 
 const notificationCheck = function () {
-
-
-    if (window.Notification && Notification.permission === "granted") {
-
+    if (window.Notification && Notification.permission === 'granted') {
         // ...
         return true
-    }
-
-    else if (window.Notification && Notification.permission !== "denied") {
-
-
+    } else if (window.Notification && Notification.permission !== 'denied') {
         Notification.requestPermission().then(permission => {
-
             if (permission === 'granted') {
-
                 dispatcher(_state)
                 _state = ''
                 return true
-            }
-
-            else {
-
+            } else {
                 initial = initial + 1
                 snackbar.add({
                     labelText: 'Notification is disabled, Enable it to recieve notifications.',
                     dismiss: true
                 })
             }
-        });
-    }
-
-    else {
-
+        })
+    } else {
         if ([1, 3, 5, 7, 9, 11, 13, 15].includes(initial)) {
             snackbar.add({
                 labelText: 'Notification is disabled in this browser, Enable it to recieve notifications.',
@@ -51,7 +36,6 @@ const notificationCheck = function () {
     }
 }
 
-
 /**
  * @param req
  * @property notificationState = { type: NEW_MESSAGE, data }
@@ -59,44 +43,35 @@ const notificationCheck = function () {
 */
 
 export const doNewMessage = function (req) {
-
     const newMessage = () => {
-
         let data
 
         if (req.groupId) {
-
-            let title = `${req.groupName}`
-            let body = `New Message from ${req.senderName === undefined ? req.sender : req.senderName}`
+            const title = `${req.groupName}`
+            const body = `New Message from ${req.senderName === undefined ? req.sender : req.senderName}`
             data = { title, sound: config.messageAlert, options: { body, icon: config.default.icon, badge: config.default.icon }, req }
         } else {
-
-            let title = `${req.senderName === undefined ? req.sender : req.senderName}`
-            let body = `New Message`
+            const title = `${req.senderName === undefined ? req.sender : req.senderName}`
+            const body = 'New Message'
             data = { title, sound: config.messageAlert, options: { body, icon: config.default.icon, badge: config.default.icon }, req }
         }
 
-        let notificationState = { type: NEW_MESSAGE, data: data }
+        const notificationState = { type: NEW_MESSAGE, data: data }
 
-        let canI = notificationCheck();
+        const canI = notificationCheck()
 
         if (canI === true) {
-
             dispatcher(notificationState)
         } else {
-
             _state = notificationState
         }
     }
 
-    let page = window.top.location.href
+    const page = window.top.location.href
     if (!document.hasFocus()) {
-
         newMessage()
     } else {
-
         if (page.includes(req.url) === false) {
-
             newMessage()
         }
     }

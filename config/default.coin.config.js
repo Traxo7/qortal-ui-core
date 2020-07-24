@@ -1,11 +1,11 @@
 const coin = {
-    name: 'Frag',
-    symbol: 'FRG',
+    name: 'Qortal',
+    symbol: 'QORT',
     addressCount: 1,
-    addressVersion: 35, // F [58 is Q]
+    addressVersion: 58,
     decimals: 100000000,
-    logo: '/img/FRAG_LOGO.png'
-    // icon: '/img/QORT_LOGO.png'
+    logo: '/img/QORT_LOGO.png',
+    icon: '/img/QORT_LOGO.png'
 }
 
 module.exports = coin

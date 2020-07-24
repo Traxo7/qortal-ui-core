@@ -14,13 +14,10 @@ import { doStoreWallet } from '../../redux/user/user-actions.js'
 import snackbar from '../../functional-components/snackbar.js'
 
 import '@material/mwc-button'
-import '@material/mwc-icon-button'
 import '@material/mwc-checkbox'
 import '@material/mwc-icon'
-import '@material/mwc-formfield'
 
 import '@polymer/iron-pages'
-import '@polymer/iron-label/iron-label.js'
 import '@polymer/paper-input/paper-input-container.js'
 import '@polymer/paper-input/paper-input.js'
 
@@ -82,7 +79,6 @@ class CreateAccountSection extends connect(store)(LitElement) {
         this.pages = {
             info: {
                 next: e => {
-
                     this.error = false
                     this.errorMessage = ''
                     this.nextButtonText = 'Create'
@@ -100,9 +96,7 @@ class CreateAccountSection extends connect(store)(LitElement) {
                     const nameInput = this.shadowRoot.getElementById('nameInput').value
                     const password = this.shadowRoot.getElementById('password').value
 
-
                     if (password === '') {
-
                         snackbar.add({
                             labelText: 'Please enter a Password!',
                             dismiss: true
@@ -111,7 +105,6 @@ class CreateAccountSection extends connect(store)(LitElement) {
                     }
 
                     if (password.length < 8 && lastPassword !== password) {
-
                         snackbar.add({
                             labelText: 'Your password is less than 8 characters! This is not recommended. You can continue to ignore this warning.',
                             dismiss: true
@@ -121,7 +114,6 @@ class CreateAccountSection extends connect(store)(LitElement) {
                     }
 
                     if (this.saveAccount === true && nameInput === '') {
-
                         snackbar.add({
                             labelText: 'Please enter a Name!',
                             dismiss: true
@@ -142,23 +134,18 @@ class CreateAccountSection extends connect(store)(LitElement) {
                         y: e.clientY
                     })
                         .then(() => createWallet('phrase', seedObj, status => {
-
                             ripple.loadingMessage = status
                         }))
                         .then(wallet => {
-
                             this._wallet = wallet
-
 
                             return ripple.fade()
                         })
                         .then(() => {
-
                             this.selectPage('backup')
                             this.updateNext()
                         })
                         .catch(e => {
-
                             snackbar.add({
                                 labelText: e,
                                 dismiss: true
@@ -175,30 +162,23 @@ class CreateAccountSection extends connect(store)(LitElement) {
             },
             backup: {
                 next: e => {
-
                     if (!this.isDownloadedBackup) {
-
                         snackbar.add({
                             labelText: 'Please Download Your Wallet BackUp file!',
                             dismiss: true
                         })
                     } else {
-
                         if (this.saveAccount) {
-
                             ripple.welcomeMessage = 'Preparing Your Account'
                             ripple.open({
                                 x: e.clientX,
                                 y: e.clientY
                             })
                                 .then(() => {
-
                                     store.dispatch(doStoreWallet(this._wallet, this._pass, this._name, () => {
-
                                         ripple.loadingMessage = 'Loading, Please wait...'
                                     }))
                                         .then(() => {
-
                                             store.dispatch(doLogin(this._wallet))
                                             store.dispatch(doSelectAddress(this._wallet.addresses[0]))
                                             this.cleanup()
@@ -206,17 +186,13 @@ class CreateAccountSection extends connect(store)(LitElement) {
                                         })
                                         .catch(err => console.error(err))
                                 }).catch(err => {
-                                    console.error(err);
+                                    console.error(err)
                                 })
-
-
                         } else {
-
                             store.dispatch(doLogin(this._wallet))
                             store.dispatch(doSelectAddress(this._wallet.addresses[0]))
                             this.cleanup()
                         }
-
                     }
                 },
                 back: () => {
@@ -497,7 +473,6 @@ class CreateAccountSection extends connect(store)(LitElement) {
     }
 
     next(e) {
-
         this.pages[this.selectedPage].next(e)
     }
 
@@ -526,7 +501,6 @@ class CreateAccountSection extends connect(store)(LitElement) {
     }
 
     async downloadBackup(wallet) {
-
         const state = store.getState()
         const data = await wallet.generateSaveWalletData(this._pass, state.config.crypto.kdfThreads, () => { })
         const dataString = JSON.stringify(data)

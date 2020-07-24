@@ -15,50 +15,34 @@ export const selectedAddressStream = new EpmlStream(SELECTED_ADDRESS_STREAM_NAME
 export const chatHeadsStateStream = new EpmlStream(CHAT_HEADS_STREAM_NAME, () => store.getState().app.chatHeads)
 export const nodeConfigStream = new EpmlStream(NODE_CONFIG_STREAM_NAME, () => store.getState().app.nodeConfig)
 
-// const INTERVAL = 10 * 60 * 1000 // 10 minutes
-
 let oldState = {
     app: {}
 }
-
-let pingInterval
-
-// protocol: 'http',
-//     domain: '127.0.0.1',
-//         port: 4999,
-//             url: '/airdrop/',
-//                 dhcpUrl: '/airdrop/ping/'
 
 store.subscribe(() => {
     const state = store.getState()
 
     if (oldState.app.loggedIn !== state.app.loggedIn) {
-
         loggedInStream.emit(state.app.loggedIn)
     }
     // This one may be a little on the heavy side...AHHH, NEED TO MOVE STORAGE OF ENCRYPTED SEED. DONE <3
     if (oldState.config !== state.config) {
-
         configStream.emit(state.config)
     }
 
     if (oldState.app.nodeConfig !== state.app.nodeConfig) {
-
         nodeConfigStream.emit(state.app.nodeConfig)
     }
 
     if (oldState.app.selectedAddress !== state.app.selectedAddress) {
-
         selectedAddressStream.emit({
             address: state.app.selectedAddress.address,
             color: state.app.selectedAddress.color,
             nonce: state.app.selectedAddress.nonce,
             textColor: state.app.selectedAddress.textColor
         })
-
     }
     if (oldState.app.chatHeads !== state.app.chatHeads) {
-
         chatHeadsStateStream.emit(state.app.chatHeads)
     }
 

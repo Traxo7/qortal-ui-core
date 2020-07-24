@@ -1,7 +1,6 @@
 const ServerFactory = require('./ServerFactory.js')
 
 const createPrimaryRoutes = require('./routes/createPrimaryRoutes.js')
-// const createPluginRoutes = require('./routes/createPluginRoutes.js')
 
 const createServer = (config, plugins) => {
     this.start = async function () {

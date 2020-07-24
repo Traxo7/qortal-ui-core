@@ -1,5 +1,4 @@
 export const initWorkersReducer = (state, action) => {
-
     switch (action.status) {
         case 'success':
             return {

@@ -15,7 +15,6 @@ import './particle.js'
 import './welcome-page.js'
 import './create-account-section.js'
 import './login-section.js'
-import './show-address.js'
 
 import getParticleConfig from './particle-config.js'
 
@@ -28,8 +27,8 @@ const animationDuration = 0.7 // Seconds
 class LoginView extends connect(store)(LitElement) {
     static get properties() {
         return {
-            loggedIn: { type: 'Boolean' },
-            selectedPage: { type: 'String' },
+            loggedIn: { type: Boolean },
+            selectedPage: { type: String },
             pages: { type: Object },
             rippleIsOpen: { type: Boolean },
             config: { type: Object },
@@ -47,7 +46,7 @@ class LoginView extends connect(store)(LitElement) {
     }
 
     getPreSelectedPage() {
-        // return (store.getState().user.storedWallets && Object.entries(store.getState().user.storedWallets || {}).length > 0) ? 'login' : 'welcome'
+
         return 'welcome'
     }
 
@@ -65,14 +64,13 @@ class LoginView extends connect(store)(LitElement) {
     }
 
     firstUpdated() {
-        // this.shadowRoot.getElementById('createAccountSection').loginFunction = (...args) => this.login(...args)
-        // this.shadowRoot.getElementById('loginSection').loginFunction = (...args) => this.login(...args)
+
         stateAwait(state => {
             return 'primary' in state.config.styles.theme.colors
         }).then(() => {
             const particleDiv = this.shadowRoot.querySelector('#particles-js')
             const part = new particlesJS(particleDiv, getParticleConfig(this.config), (c) => {
-                //
+                //...
             })
         }).catch(e => console.error(e))
 
@@ -88,9 +86,9 @@ class LoginView extends connect(store)(LitElement) {
             setTimeout(() => { this.selectedPageElement = selectedPageElement }, 1) // Yuck
         }
         loginContainerPages.addEventListener('selected-item-changed', () => {
-            // Undefined is the remove step...
+
             if (!loginContainerPages.selectedItem) {
-                // Remove the old... if it was. Not entirely sure it's needed
+
                 if (this.selectedPageElement.removeEventListener) {
                     this.selectedPageElement.removeEventListener('navigate', navigate)
                     this.selectedPageElement.removeEventListener('updatedProperty', updatedProperty)
@@ -100,13 +98,13 @@ class LoginView extends connect(store)(LitElement) {
                 loginCard.className += ' animated'
             } else {
                 setTimeout(() => {
-                    // reference the new
+
                     this.selectedPageElement = loginContainerPages.selectedItem
-                    // and listen to it
+
                     this.selectedPageElement.addEventListener('navigate', navigate)
                     this.selectedPageElement.addEventListener('updatedProperty', updatedProperty)
                     setTimeout(() => loginCard.classList.remove('animated'), animationDuration * 1000)
-                }, 1) // Make it async so that it actually notices the object reassignment up above... I feel like there's a better way but I'm a n00b
+                }, 1)
             }
         })
     }
@@ -129,7 +127,7 @@ class LoginView extends connect(store)(LitElement) {
                     background-size: cover;
                     background-position: 50% 50%;
                 }
-                /* GO SASSSSSSS ASAPPP */
+            
                 .login-page {
                     height: var(--window-height);
                     width:100vw;
@@ -138,17 +136,11 @@ class LoginView extends connect(store)(LitElement) {
                     position:absolute;
                     top:0;
                     left:0;
-                    /* background: var(--mdc-theme-surface); */
-                    /* background: var(--mdc-theme-background); */
-                    /* background: #333; Needs to become configurable... */
                     z-index:1;
                 }
                 .login-card-container {
                     max-width:1240px;
                     max-height:var(--window-height);
-/* 
-                    padding-right: 15px;
-                    padding-left: 15px; */
                     margin-right: auto;
                     margin-left: auto;
 
@@ -175,21 +167,16 @@ class LoginView extends connect(store)(LitElement) {
                     display:inline;
                 }
                 #loginContainerPages [page] {
-                    /* background: var(--mdc-theme-surface); */
                     background: none;
                     padding:0;
                 }
                 .login-card {
                     min-width: 340px;
-                    /* background: var(--mdc-theme-surface); */
                     background: var(--mdc-theme-background);
                     border-bottom: 2px solid var(--mdc-theme-primary);
                     border-top: 2px solid var(--mdc-theme-primary);
                     text-align:center;
                     z-index:0;
-
-                    /* box-shadow: var(--shadow-4); */
-                    /* padding: 12px; */
                     padding:0;
                     border: 0;
                     border-radius: 4px;
@@ -221,14 +208,10 @@ class LoginView extends connect(store)(LitElement) {
                 @media only screen and (min-width: ${getComputedStyle(document.body).getPropertyValue('--layout-breakpoint-tablet')}) {
                     /* Desktop/tablet */
                     .login-card {
-                        /* box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); */
                         max-width:460px;
                     }
                     #loginContainerPages [page] {
-                        /* border: 1px solid var(--mdc-theme-on-surface); */
-                        /* box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); */
                         border-radius: 4px;
-                        /* padding: 6px; */
                     }
                     #loginContainerPages [page="welcome"] {
 
@@ -244,7 +227,6 @@ class LoginView extends connect(store)(LitElement) {
                         background: var(--mdc-theme-surface);
                     }
                     .login-card{
-                        /* height:100%; */
                         width:100%;
                         margin:0;
                         top:0;
@@ -292,9 +274,7 @@ class LoginView extends connect(store)(LitElement) {
                 }
             </style>
 
-                <!-- These are to enable/disable the actual logging in... can just leave it on the show-address page.   -->
             <div class="login-page" ?hidden=${this.loggedIn}>
-            <!-- <div class="login-page"> -->
                 <div id="particles-js"></div>
                 <mwc-fab icon="settings" style="position:fixed; right:24px; bottom:24px;" @click=${() => settings.show()}></mwc-fab>
                 <div class="login-card-container">
@@ -302,17 +282,14 @@ class LoginView extends connect(store)(LitElement) {
                     <div class="login-card-center-container">
                         <div class="login-card" id="login-card">
                             <iron-pages selected="${this.selectedPage}" attr-for-selected="page" id="loginContainerPages">
-                                <!-- Instead make the page fire a page change event, catch it and respond -->
                                 <welcome-page @next=${e => this.selectedPageElement.next(e)} page="welcome"></welcome-page>
                                 <create-account-section @next=${e => this.selectedPageElement.next(e)} page="create-account"></create-account-section>
                                 <login-section @next=${e => this.selectedPageElement.next(e)} page="login"></login-section>
-                                <show-address @next=${e => this.selectedPageElement.next(e)} page="show-address"></show-address>
                             </iron-pages>
                             <div id="login-pages-nav" ?hidden="${this.selectedPageElement.hideNav}">
                                 <mwc-button @click=${e => this.selectedPageElement.back(e)} id="nav-back" ?hidden="${this.selectedPageElement.backHidden}" ?disabled="${this.selectedPageElement.backDisabled}">
                                     <mwc-icon>keyboard_arrow_left</mwc-icon>${this.selectedPageElement.backText}
                                 </mwc-button>
-
                                 <mwc-button @click=${e => this.selectedPageElement.next(e)} id="nav-next" ?hidden="${this.selectedPageElement.nextHidden}" ?disabled="${this.selectedPageElement.nextDisabled}">
                                     ${this.selectedPageElement.nextText}<mwc-icon>keyboard_arrow_right</mwc-icon>
                                 </mwc-button>

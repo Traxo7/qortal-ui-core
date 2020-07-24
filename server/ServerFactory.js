@@ -1,11 +1,6 @@
-// const url = require('url')
 const Path = require('path')
-
 const Hapi = require('@hapi/hapi')
-
-const Inert = require('inert') // For serving static files
-// const h2o2 = require('h2o2') // Proxy
-// const Nes = require('nes') Future, would be cool to work with qora for ws
+const Inert = require('inert')
 
 function serverFactory(routes, address, port, tls) {
     this.server = new Hapi.Server({
@@ -21,10 +16,7 @@ function serverFactory(routes, address, port, tls) {
 
     this.startServer = async () => {
         try {
-            await this.server.register([
-                Inert//,
-                // h2o2
-            ])
+            await this.server.register([Inert])
 
             this.server.route(routes)
 

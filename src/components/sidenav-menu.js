@@ -186,6 +186,7 @@ class SidenavMenu extends connect(store)(LitElement) {
 
   constructor() {
     super()
+    this.urls = []
   }
 
   render() {

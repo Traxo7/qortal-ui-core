@@ -4,13 +4,14 @@ import { LOAD_NODE_CONFIG, SET_NODE, ADD_NODE } from '../app-action-types.js'
 const nodeConfigUrl = '/getConfig'
 
 export const doLoadNodeConfig = () => {
+
     return (dispatch, getState) => {
         fetch(nodeConfigUrl)
             .then(res => {
                 return res.json()
             })
             .then(data => {
-                let nodeConfig = {
+                const nodeConfig = {
                     node: 1,
                     knownNodes: [{}],
                     version: ''
@@ -32,8 +33,6 @@ const loadNodeConfig = (payload) => {
         payload
     }
 }
-
-
 
 export const doSetNode = (nodeIndex) => {
     return (dispatch, getState) => {

@@ -2,8 +2,6 @@ const path = require('path')
 
 const createCommonRoutes = require('./createCommonRoutes.js')
 
-// THOUGHTS: Make all the routes support production and dev
-
 const createPrimaryRoutes = (config, plugins) => {
     const routes = createCommonRoutes(config)
 
@@ -28,9 +26,7 @@ const createPrimaryRoutes = (config, plugins) => {
         {
             method: 'GET',
             path: '/{path*}',
-            // Make this support production and dev...
             handler: (request, h) => {
-                console.log("PARAMS-PRIMARY:  ==> ", request.params);
                 const filePath = path.join(__dirname, '../../public/index.html')
                 const response = h.file(filePath, {
                     confine: true
@@ -74,7 +70,6 @@ const createPrimaryRoutes = (config, plugins) => {
             handler: (request, h) => {
 
                 const plugin = request.params.path.split('/')[0]
-                console.log("PARAMS-PLUGINS:  ==> ", request.params);
                 const filePath = path.join(pluginFolders[plugin], '../', request.params.path)
 
                 const response = h.file(filePath, {

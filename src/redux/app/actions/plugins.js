@@ -1,4 +1,5 @@
 import { ADD_PLUGIN, ADD_PLUGIN_URL, PAGE_URL } from '../app-action-types.js'
+
 export const doAddPluginUrl = (pluginUrlsConf) => {
     return (dispatch, getState) => {
         dispatch(addPluginUrl(pluginUrlsConf))
@@ -13,7 +14,6 @@ const addPluginUrl = (payload) => {
 }
 
 export const doAddPlugin = (epmlInstance) => {
-
     return (dispatch, getState) => {
         dispatch(addPlugin(epmlInstance))
     }

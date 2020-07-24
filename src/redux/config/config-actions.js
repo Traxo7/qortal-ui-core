@@ -3,7 +3,6 @@ export const LOAD_CONFIG_FROM_API = 'LOAD_CONFIG_FROM_API'
 const configUrl = '/getConfig'
 
 export const doLoadConfigFromAPI = () => {
-
     return (dispatch, getState) => {
         if (getState().config.loaded) return dispatch(loadConfigFromAPI('success'))
         dispatch(loadConfigFromAPI())

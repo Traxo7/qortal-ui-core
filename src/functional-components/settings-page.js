@@ -12,8 +12,7 @@ import '@material/mwc-icon'
 
 import '@material/mwc-list/mwc-list-item.js'
 
-import snackbar from './snackbar.js';
-
+import snackbar from './snackbar.js'
 
 let settingsDialog
 
@@ -48,7 +47,6 @@ class SettingsPage extends connect(store)(LitElement) {
                 <div style="min-height:450px; min-width: 300px; box-sizing: border-box; position: relative;">
 
                     <mwc-select id="nodeSelect" label="Node url" index="0" @selected=${(e) => this.nodeSelected(e)} style="min-width: 130px; max-width:100%; width:100%;">
-                        <!-- <mwc-list-item value="none"></mwc-list-item> -->
                         ${this.nodeConfig.knownNodes.map((n, index) => html`
                             <mwc-list-item value="${index}">${n.protocol + '://' + n.domain + ':' + n.port}</mwc-list-item>
                         `)}
@@ -102,7 +100,6 @@ class SettingsPage extends connect(store)(LitElement) {
     }
 
     nodeSelected(e) {
-        // console.log('Node selected', e)
         const selectedNodeIndex = this.shadowRoot.getElementById('nodeSelect').value
         const selectedNode = this.nodeConfig.knownNodes[selectedNodeIndex]
         const selectedNodeUrl = `${selectedNode.protocol + '://' + selectedNode.domain + ':' + selectedNode.port}`
@@ -119,13 +116,12 @@ class SettingsPage extends connect(store)(LitElement) {
     }
 
     addNode() {
-
         const protocolList = this.shadowRoot.getElementById('protocolList').value
         const domainInput = this.shadowRoot.getElementById('domainInput').value
         const portInput = this.shadowRoot.getElementById('portInput').value
 
         if (protocolList.length >= 4 && domainInput.length >= 3 && portInput.length >= 4) {
-            let nodeObject = {
+            const nodeObject = {
                 protocol: protocolList,
                 domain: domainInput,
                 port: portInput
@@ -144,7 +140,6 @@ class SettingsPage extends connect(store)(LitElement) {
 
             this.shadowRoot.querySelector('#addNodeDialog').close()
         }
-
     }
 }
 

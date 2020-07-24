@@ -2,12 +2,7 @@ const path = require('path')
 
 const { makeSourceAbsolute } = require('../tooling/utils.js')
 const srcDir = '../src'
-// All these paths are resolved BEFORE building. Rollup handles things for the client side.
 
-// SRC_FOLDER = '' // Comes from config
-// BUILD_FOLDER = '' // Comes from config
-
-// Could be used to overwrite absolutely anything
 const options = {
     inputFile: path.join(__dirname, '../src/main.js'),
     outputDir: path.join(__dirname, '../build'),
@@ -17,7 +12,6 @@ const options = {
 
 const aliases = {
     'qortal-ui-crypto': 'node_modules/qortal-ui-crypto/api.js'
-    // '@frag/crypto': path.join(__dirname, '../node_modules/qortal-ui-crypto/')
 }
 
 const apiComponents = {
@@ -26,30 +20,14 @@ const apiComponents = {
         file: 'api/api.js',
         className: 'api'
     }
-    // Need to split up the api/crypto and the wallet/wallet manager maybe?
-    // ,
-    // 'wallet': {
-
-    // }
 }
 
-// No idea what this was for...
-const styleTree = {
-    styles: {
-        file: 'styles/styles.scss'
-    }
-}
 
-// There are imports which append themselves to the dom and export that specific instance. There are purely meant to be used as an api, rather than as a component
 const functionalComponents = {
     'loading-ripple': {
         file: 'functional-components/loading-ripple.js',
-        className: 'LoadingRipple'// Maybe don't want class names....rather exported function or object? More likely to be an exported instance of the class.
+        className: 'LoadingRipple'
     },
-    // 'toast': {
-    //     file: 'components/toast.js',
-    //     className: 'Toast'
-    // },
     'confirm-transaction-dialog': {
         file: 'functional-components/confirm-transaction-dialog',
         className: 'ConfirmTransactionDialog'
@@ -61,19 +39,16 @@ const inlineComponents = [
     {
         className: 'worker',
         input: path.join(__dirname, srcDir, 'worker.js'),
-        output: 'worker.js' // relative to outputDir
+        output: 'worker.js'
     },
     {
         className: 'PluginMainJSLoader',
         input: path.join(__dirname, srcDir, '/plugins/plugin-mainjs-loader.js'),
-        output: 'plugins/plugin-mainjs-loader.js' // relative to outputDir
+        output: 'plugins/plugin-mainjs-loader.js'
     }
 ]
 
-// This is the actual app structure. Each component is given access to itself I guess, after being loaded via dynamic import or systemjs
-// Give every component an onLoaded method that is called once it's imported so that it can import it's own dependencies. Is passed it's children.
 const elementComponents = {
-    // This should be in the qortal-ui-crypto thing
     'main-app': {
         file: 'components/main-app.js',
         className: 'MainApp',
@@ -123,16 +98,28 @@ const elementComponents = {
                         className: 'LoginSection'
                     }
                 }
+            },
+            'settings-view': {
+                file: 'components/settings-view/user-settings.js',
+                className: 'UserSettings',
+                children: {
+                    'account-view': {
+                        file: 'components/settings-view/account-view.js',
+                        className: 'AccountView'
+                    },
+                    'security-view': {
+                        file: 'components/settings-view/security-view.js',
+                        className: 'SecurityView'
+                    },
+                    'notifications-view': {
+                        file: 'components/settings-view/notifications-view.js',
+                        className: 'NotificationsView'
+                    }
+                }
             }
-            // ,
-            // 'confirm-transaction-dialog': {} // Perhaps should be more like the login loading ripple? Add itself to the dom and exports a reference. Mmm
         }
     }
-    // confirm-transaction-dialog and loading-ripple goes here? Split up the element and the api? Nah, the element is the api
 }
-
-// import './create-account-section.js'
-// import './login-section.js'
 
 makeSourceAbsolute(path.join(__dirname, srcDir), elementComponents)
 makeSourceAbsolute(path.join(__dirname, srcDir), functionalComponents)

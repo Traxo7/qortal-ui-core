@@ -1,8 +1,8 @@
 // Loading state, login state, isNavDrawOpen state etc. None of this needs to be saved to localstorage.
-import { LOG_IN, LOG_OUT, NETWORK_CONNECTION_STATUS, INIT_WORKERS, ADD_PLUGIN_URL, ADD_PLUGIN, NAVIGATE, SELECT_ADDRESS, ACCOUNT_INFO, CHAT_HEADS, UPDATE_BLOCK_INFO, UPDATE_NODE_STATUS, UPDATE_NODE_INFO, LOAD_NODE_CONFIG, SET_NODE, ADD_NODE, PAGE_URL } from './app-action-types.js'
+import { LOG_IN, LOG_OUT, NETWORK_CONNECTION_STATUS, INIT_WORKERS, ADD_PLUGIN_URL, ADD_PLUGIN, ADD_NEW_PLUGIN_URL, NAVIGATE, SELECT_ADDRESS, ACCOUNT_INFO, CHAT_HEADS, UPDATE_BLOCK_INFO, UPDATE_NODE_STATUS, UPDATE_NODE_INFO, LOAD_NODE_CONFIG, SET_NODE, ADD_NODE, PAGE_URL } from './app-action-types.js'
 import { initWorkersReducer } from './reducers/init-workers.js'
 import { loginReducer } from './reducers/login-reducer.js'
-import { setNode, addNode } from './reducers/manage-node.js';
+import { setNode, addNode } from './reducers/manage-node.js'
 
 const INITIAL_STATE = {
     loggedIn: false,
@@ -36,7 +36,7 @@ const INITIAL_STATE = {
     blockInfo: {},
     nodeInfo: {},
     nodeStatus: {},
-    pageUrl: ""
+    pageUrl: ''
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -62,6 +62,11 @@ export default (state = INITIAL_STATE, action) => {
                 ]
             }
         case ADD_PLUGIN_URL:
+            return {
+                ...state,
+                registeredUrls: action.payload
+            }
+        case ADD_NEW_PLUGIN_URL: // TODO: Will be used in to add new plugins in future...
             return {
                 ...state,
                 registeredUrls: state.registeredUrls.concat(action.payload)

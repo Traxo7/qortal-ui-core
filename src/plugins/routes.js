@@ -2,9 +2,11 @@ import { store } from '../store.js'
 import { doAddPluginUrl, doUpdateBlockInfo, doUpdateNodeStatus, doUpdateNodeInfo, doSetNode, doPageUrl, doSetChatHeads, doUpdateAccountInfo } from '../redux/app/app-actions.js'
 import * as api from 'qortal-ui-crypto'
 import { requestTransactionDialog } from '../functional-components/confirm-transaction-dialog.js'
-import { doNewMessage } from '../notifications/controller.js';
-import snackbar from '../functional-components/snackbar.js';
+import { doNewMessage } from '../notifications/controller.js'
+import snackbar from '../functional-components/snackbar.js'
 import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../localStorageHelpers.js'
+import copyTextMenu from '../functional-components/copy-text-menu.js'
+// do some thing with this...
 
 const createTransaction = api.createTransaction
 const processTransaction = api.processTransaction
@@ -24,7 +26,6 @@ export const routes = {
     },
 
     getAccountInfo: async req => {
-
         return store.getState().app.accountInfo
     },
 
@@ -68,6 +69,15 @@ export const routes = {
         return saveStateToLocalStorage(req.data.key, req.data.dataObj)
     },
 
+    openCopyTextMenu: async req => {
+        const textMenuObject = { selectedText: req.data.selectedText, eventObject: req.data.eventObject, isFrame: req.data.isFrame }
+        copyTextMenu.open(textMenuObject)
+    },
+
+    closeCopyTextMenu: async req => {
+        return copyTextMenu.close()
+    },
+
     apiCall: async req => {
         const url = req.data.url
         delete req.data.url
@@ -85,7 +95,6 @@ export const routes = {
             }
         })
     },
-
 
     transaction: async req => {
         let response
@@ -132,7 +141,6 @@ export const routes = {
     sign_chat: async req => {
         let response
         try {
-
             const signedChatBytes = await signChatTransaction(req.data.chatBytesArray, req.data.chatNonce, store.getState().app.wallet._addresses[req.data.nonce].keyPair)
 
             const res = await processTransaction(signedChatBytes)
@@ -146,7 +154,6 @@ export const routes = {
     },
 
     showNotification: async req => {
-
         doNewMessage(req.data)
     },
 
