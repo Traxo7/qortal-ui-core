@@ -6,7 +6,8 @@ import { doNewMessage } from '../notifications/controller.js'
 import snackbar from '../functional-components/snackbar.js'
 import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../localStorageHelpers.js'
 import copyTextMenu from '../functional-components/copy-text-menu.js'
-// do some thing with this...
+import framePasteMenu from '../functional-components/frame-paste-menu.js';
+
 
 const createTransaction = api.createTransaction
 const processTransaction = api.processTransaction
@@ -70,12 +71,25 @@ export const routes = {
     },
 
     openCopyTextMenu: async req => {
-        const textMenuObject = { selectedText: req.data.selectedText, eventObject: req.data.eventObject, isFrame: req.data.isFrame }
+
+        const textMenuObject = {
+            selectedText: req.data.selectedText,
+            eventObject: req.data.eventObject,
+            isFrame: req.data.isFrame
+        }
         copyTextMenu.open(textMenuObject)
     },
 
     closeCopyTextMenu: async req => {
-        return copyTextMenu.close()
+        copyTextMenu.close()
+    },
+
+    openFramePasteMenu: async req => {
+        framePasteMenu.open(req.data)
+    },
+
+    closeFramePasteMenu: async req => {
+        framePasteMenu.close()
     },
 
     apiCall: async req => {

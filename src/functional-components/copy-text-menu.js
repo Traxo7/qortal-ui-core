@@ -1,8 +1,13 @@
 import { LitElement, html, css } from 'lit-element'
+import { connect } from 'pwa-helpers'
+import { store } from '../store';
+
+import { doCopyMenuSwitch } from '../redux/app/app-actions';
+
 
 let copyTextMenuElement
 
-class CopyTextMenu extends LitElement {
+class CopyTextMenu extends connect(store)(LitElement) {
     static get properties() {
         return {
             selectedText: {
@@ -14,6 +19,9 @@ class CopyTextMenu extends LitElement {
                 type: Object,
                 attribute: 'event-object',
                 reflectToAttribute: true
+            },
+            isCopyMenuOpen: {
+                type: Boolean
             }
         }
     }
@@ -22,6 +30,7 @@ class CopyTextMenu extends LitElement {
         super()
         this.selectedText = ''
         this.eventObject = {}
+        this.isCopyMenuOpen = false
     }
 
     static get styles() {
@@ -80,7 +89,6 @@ class CopyTextMenu extends LitElement {
         <div class='context-menu'>
             <ul id='items'>
                 <li @click=${() => this.saveToClipboard(this.selectedText)} >Copy</li>
-                <!-- <li>Paste</li> -->
             </ul>
             <!-- <hr /> -->
             <!-- <ul id="items">
@@ -96,12 +104,29 @@ class CopyTextMenu extends LitElement {
 
     saveToClipboard(text) {
 
-        navigator.clipboard.writeText(text).then(() => {
+        try {
 
-            // ...
-        }, (err) => {
-            console.log('failed: ', err)
-        })
+            navigator.clipboard.writeText(text).then(() => {
+
+                window.getSelection().removeAllRanges()
+                window.parent.getSelection().removeAllRanges()
+
+                store.dispatch(doCopyMenuSwitch(false))
+
+                // ...
+            }).catch((err) => {
+                console.log('failed: ', err)
+            })
+        } catch (err) {
+
+            // Fallback, if all fails
+            document.execCommand('copy');
+
+            window.getSelection().removeAllRanges()
+            window.parent.getSelection().removeAllRanges()
+
+            store.dispatch(doCopyMenuSwitch(false))
+        }
     }
 
     textMenu(selectedText, eventObject, isFrame) {
@@ -191,17 +216,17 @@ class CopyTextMenu extends LitElement {
         const eventObject = textMenuObject.eventObject
         const isFrame = textMenuObject.isFrame
         this.textMenu(selectedText, eventObject, isFrame)
-        this.focus()
+        store.dispatch(doCopyMenuSwitch(true))
     }
 
     close() {
         this.contextElement.style.opacity = '0'
         this.contextElement.classList.remove('c-open')
-        return true
     }
 
     stateChanged(state) {
-        // ...
+
+        this.isCopyMenuOpen = state.app.copyMenuSwitch
     }
 }
 

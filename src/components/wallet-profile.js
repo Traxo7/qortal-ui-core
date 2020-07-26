@@ -16,7 +16,7 @@ import '@material/mwc-dialog'
 import '@material/mwc-icon-button'
 import '@material/mwc-textfield'
 
-import copyTextMenu from '../functional-components/copy-text-menu.js'
+// import pasteMenu from '../functional-components/paste-menu.js';
 
 class WalletProfile extends connect(store)(LitElement) {
     static get properties() {
@@ -214,45 +214,8 @@ class WalletProfile extends connect(store)(LitElement) {
         this.getBurnedQora(this.wallet.addresses[0].address)
     }
 
-    _textMenu(event) {
-        const getSelectedText = () => {
-            var text = ''
-            if (typeof window.getSelection !== 'undefined') {
-                text = window.getSelection().toString()
-            } else if (typeof this.shadowRoot.selection !== 'undefined' && this.shadowRoot.selection.type == 'Text') {
-                text = this.shadowRoot.selection.createRange().text
-            }
-            return text
-        }
-
-        const checkSelectedTextAndShowMenu = () => {
-            const selectedText = getSelectedText()
-            if (selectedText && typeof selectedText === 'string') {
-
-                const textMenuObject = { selectedText, eventObject: event }
-                copyTextMenu.open(textMenuObject)
-            }
-        }
-
-        checkSelectedTextAndShowMenu()
-    }
-
     firstUpdated() {
-        window.addEventListener('contextmenu', (event) => {
-            event.preventDefault()
 
-            this._textMenu(event)
-        })
-
-        window.addEventListener('click', () => {
-            copyTextMenu.close()
-        })
-
-        window.onkeyup = (e) => {
-            if (e.keyCode === 27) {
-                copyTextMenu.close()
-            }
-        }
 
         const container = document.body.querySelector('main-app').shadowRoot.querySelector('app-view').shadowRoot
         const dialogs = this.shadowRoot.getElementById('dialogs')

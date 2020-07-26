@@ -55,16 +55,3 @@ const setQChatNotificationConfig = (payload) => {
         payload
     }
 }
-
-// export const doAddNode = (nodeObject) => {
-//     return (dispatch, getState) => {
-//         return dispatch(addNode(nodeObject))
-//     }
-// }
-
-// const addNode = (payload) => {
-//     return {
-//         type: ADD_NODE,
-//         payload
-//     }
-// }

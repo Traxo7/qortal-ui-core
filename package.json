@@ -1,6 +1,6 @@
 {
     "name": "qortal-ui-core",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "QORTAL-UI Core",
     "main": "ui-core.js",
     "repository": "https://github.com/Qortal/qortal-ui-core.git",

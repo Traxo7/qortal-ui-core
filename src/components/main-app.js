@@ -11,6 +11,10 @@ import '../styles/app-styles.js'
 import './login-view/login-view.js'
 import './app-view.js'
 
+import copyTextMenu from '../functional-components/copy-text-menu.js'
+// import pasteMenu from '../functional-components/paste-menu.js';
+import framePasteMenu from '../functional-components/frame-paste-menu.js';
+
 installRouter((location) => store.dispatch(doNavigate(location)))
 
 class MainApp extends connect(store)(LitElement) {
@@ -70,6 +74,48 @@ class MainApp extends connect(store)(LitElement) {
     connectedCallback() {
         super.connectedCallback()
         this.initial = 0
+
+        window.addEventListener('contextmenu', (event) => {
+            event.preventDefault()
+
+            // if (event.target.tagName === 'TEXTAREA')
+            this._textMenu(event)
+        })
+
+        window.addEventListener('click', () => {
+            copyTextMenu.close()
+            framePasteMenu.close()
+        })
+
+        window.onkeyup = (e) => {
+            if (e.keyCode === 27) {
+                copyTextMenu.close()
+                framePasteMenu.close()
+            }
+        }
+    }
+
+    _textMenu(event) {
+        const getSelectedText = () => {
+            var text = ''
+            if (typeof window.getSelection !== 'undefined') {
+                text = window.getSelection().toString()
+            } else if (typeof this.shadowRoot.selection !== 'undefined' && this.shadowRoot.selection.type == 'Text') {
+                text = this.shadowRoot.selection.createRange().text
+            }
+            return text
+        }
+
+        const checkSelectedTextAndShowMenu = () => {
+            const selectedText = getSelectedText()
+            if (selectedText && typeof selectedText === 'string') {
+
+                const textMenuObject = { selectedText, eventObject: event }
+                copyTextMenu.open(textMenuObject)
+            }
+        }
+
+        checkSelectedTextAndShowMenu()
     }
 }
 
