@@ -12,6 +12,9 @@ import framePasteMenu from '../functional-components/frame-paste-menu.js';
 const createTransaction = api.createTransaction
 const processTransaction = api.processTransaction
 const signChatTransaction = api.signChatTransaction
+const tradeBotCreateRequest = api.tradeBotCreateRequest
+const tradeBotRespondRequest = api.tradeBotRespondRequest
+const signTradeBotTxn = api.signTradeBotTxn
 
 export const routes = {
     hello: async req => {
@@ -176,5 +179,36 @@ export const routes = {
             labelText: req.data,
             dismiss: true
         })
+    },
+
+    tradeBotCreateRequest: async req => {
+        let response
+        try {
+            const unsignedTxn = await tradeBotCreateRequest(req.data)
+
+            const signedTxnBytes = await signTradeBotTxn(unsignedTxn, store.getState().app.selectedAddress.keyPair)
+
+            const res = await processTransaction(signedTxnBytes)
+            response = res
+        } catch (e) {
+            console.error(e)
+            console.error(e.message)
+            response = false
+        }
+        return response
+    },
+
+    tradeBotRespondRequest: async req => {
+        let response
+        try {
+            const res = await tradeBotRespondRequest(req.data)
+
+            response = res
+        } catch (e) {
+            console.error(e)
+            console.error(e.message)
+            response = false
+        }
+        return response
     }
 }
