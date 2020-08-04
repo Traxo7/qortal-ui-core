@@ -2,7 +2,6 @@ const path = require('path')
 const resolve = require('rollup-plugin-node-resolve')
 const progress = require('rollup-plugin-progress')
 const replace = require('rollup-plugin-replace')
-const builtins = require('rollup-plugin-node-builtins')
 const globals = require('rollup-plugin-node-globals')
 const commonjs = require('rollup-plugin-commonjs')
 const alias = require('rollup-plugin-alias')
@@ -54,7 +53,7 @@ const generateBuildConfig = ({ elementComponents, functionalComponents, otherOut
                     })
                 }),
                 resolve({
-                    preferBuiltins: true,
+                    preferBuiltins: false,
                     mainFields: ['module', 'browser']
                 }),
                 replace({
@@ -62,7 +61,6 @@ const generateBuildConfig = ({ elementComponents, functionalComponents, otherOut
                 }),
                 commonjs(),
                 globals(),
-                builtins(),
                 progress(),
                 scss({
                     output: options.sassOutputDir

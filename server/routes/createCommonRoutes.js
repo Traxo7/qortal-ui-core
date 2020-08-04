@@ -1,5 +1,16 @@
 const path = require('path')
 
+const routesOptions = {
+    security: {
+        hsts: {
+            maxAge: 15768000,
+            includeSubDomains: true,
+            preload: true
+        },
+        xframe: 'sameorigin'
+    }
+}
+
 const createRoutes = config => [
 
     {
@@ -11,7 +22,8 @@ const createRoutes = config => [
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        options: routesOptions
     },
     {
         method: 'GET',
@@ -22,7 +34,8 @@ const createRoutes = config => [
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        options: routesOptions
     },
     {
         method: 'GET',
@@ -33,7 +46,8 @@ const createRoutes = config => [
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        options: routesOptions
     },
     {
         method: 'GET',
@@ -44,7 +58,8 @@ const createRoutes = config => [
                 redirectToSlash: true,
                 index: true
             }
-        }
+        },
+        options: routesOptions
     },
     {
         method: 'GET',
@@ -59,7 +74,8 @@ const createRoutes = config => [
             delete response.config.user.tls
             delete response.config.build
             return JSON.stringify(response)
-        }
+        },
+        options: routesOptions
     }
 ]
 

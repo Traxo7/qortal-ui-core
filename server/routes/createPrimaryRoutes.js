@@ -9,6 +9,17 @@ const createPrimaryRoutes = (config, plugins) => {
 
     const pluginFolders = {}
 
+    const routesOptions = {
+        security: {
+            hsts: {
+                maxAge: 15768000,
+                includeSubDomains: true,
+                preload: true
+            },
+            xframe: 'sameorigin'
+        }
+    }
+
     plugins.reduce((obj, plugin) => {
         obj[plugin.name] = plugin.folder
         return obj
@@ -21,7 +32,8 @@ const createPrimaryRoutes = (config, plugins) => {
             path: '/',
             handler: (request, reply) => {
                 return reply.redirect('/app')
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
@@ -33,14 +45,16 @@ const createPrimaryRoutes = (config, plugins) => {
                 })
                 response.header('Access-Control-Allow-Origin', request.info.host)
                 return response
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
             path: '/getPlugins',
             handler: (request, h) => {
                 return { plugins: myPlugins.map(p => p.name) }
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
@@ -51,7 +65,8 @@ const createPrimaryRoutes = (config, plugins) => {
                     redirectToSlash: true,
                     index: true
                 }
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
@@ -62,7 +77,8 @@ const createPrimaryRoutes = (config, plugins) => {
                     redirectToSlash: true,
                     index: true
                 }
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
@@ -77,7 +93,8 @@ const createPrimaryRoutes = (config, plugins) => {
                 })
                 response.header('Access-Control-Allow-Origin', request.info.host)
                 return response
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
@@ -86,7 +103,8 @@ const createPrimaryRoutes = (config, plugins) => {
                 const response = h.file(path.join(config.server.primary.page404))
                 response.header('Access-Control-Allow-Origin', request.info.host)
                 return response
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
@@ -97,7 +115,8 @@ const createPrimaryRoutes = (config, plugins) => {
                 })
                 response.header('Access-Control-Allow-Origin', request.info.host)
                 return response
-            }
+            },
+            options: routesOptions
         },
         {
             method: 'GET',
@@ -110,7 +129,8 @@ const createPrimaryRoutes = (config, plugins) => {
                 })
                 response.header('Access-Control-Allow-Origin', request.info.host)
                 return response
-            }
+            },
+            options: routesOptions
         },
 
     )
