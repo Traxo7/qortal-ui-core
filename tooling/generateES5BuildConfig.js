@@ -19,7 +19,7 @@ const generateRollupConfig = (file, { outputDir, aliases }) => {
             },
             plugins: [
                 resolve({
-                    preferBuiltins: true,
+                    preferBuiltins: false,
                     mainFields: ['module', 'browser']
                 }),
                 replace({

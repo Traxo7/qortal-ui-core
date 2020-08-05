@@ -15,6 +15,7 @@ const signChatTransaction = api.signChatTransaction
 const tradeBotCreateRequest = api.tradeBotCreateRequest
 const tradeBotRespondRequest = api.tradeBotRespondRequest
 const signTradeBotTxn = api.signTradeBotTxn
+const deleteTradeOffer = api.deleteTradeOffer
 
 export const routes = {
     hello: async req => {
@@ -193,7 +194,7 @@ export const routes = {
         } catch (e) {
             console.error(e)
             console.error(e.message)
-            response = false
+            response = e.message
         }
         return response
     },
@@ -207,7 +208,25 @@ export const routes = {
         } catch (e) {
             console.error(e)
             console.error(e.message)
-            response = false
+            response = e.message
+        }
+        return response
+    },
+
+    deleteTradeOffer: async req => {
+        let response
+        try {
+            const unsignedTxn = await deleteTradeOffer(req.data)
+
+            const signedTxnBytes = await signTradeBotTxn(unsignedTxn, req.data.tradeKeyPair, true)
+
+            const res = await processTransaction(signedTxnBytes)
+
+            response = res
+        } catch (e) {
+            console.error(e)
+            console.error(e.message)
+            response = e.message
         }
         return response
     }

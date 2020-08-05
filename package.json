@@ -7,7 +7,7 @@
     "author": "QORTAL <admin@qortal.org>",
     "license": "MIT",
     "dependencies": {
-        "@hapi/hapi": "18.4.1",
+        "@hapi/hapi": "19.2.0",
         "inert": "^5.1.2"
     },
     "devDependencies": {
@@ -54,7 +54,6 @@
         "rollup-plugin-alias": "^2.2.0",
         "rollup-plugin-babel": "^4.3.3",
         "rollup-plugin-commonjs": "^10.1.0",
-        "rollup-plugin-node-builtins": "^2.1.2",
         "rollup-plugin-node-globals": "^1.4.0",
         "rollup-plugin-node-resolve": "^5.2.0",
         "rollup-plugin-postcss": "^2.0.6",
