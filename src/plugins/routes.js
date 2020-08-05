@@ -193,7 +193,7 @@ export const routes = {
         } catch (e) {
             console.error(e)
             console.error(e.message)
-            response = false
+            response = e.message
         }
         return response
     },
@@ -207,7 +207,7 @@ export const routes = {
         } catch (e) {
             console.error(e)
             console.error(e.message)
-            response = false
+            response = e.message
         }
         return response
     }
