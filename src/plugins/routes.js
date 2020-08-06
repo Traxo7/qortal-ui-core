@@ -218,7 +218,7 @@ export const routes = {
         try {
             const unsignedTxn = await deleteTradeOffer(req.data)
 
-            const signedTxnBytes = await signTradeBotTxn(unsignedTxn, req.data.tradeKeyPair, true)
+            const signedTxnBytes = await signTradeBotTxn(unsignedTxn, store.getState().app.selectedAddress.keyPair)
 
             const res = await processTransaction(signedTxnBytes)
 
