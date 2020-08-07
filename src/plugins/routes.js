@@ -16,6 +16,7 @@ const tradeBotCreateRequest = api.tradeBotCreateRequest
 const tradeBotRespondRequest = api.tradeBotRespondRequest
 const signTradeBotTxn = api.signTradeBotTxn
 const deleteTradeOffer = api.deleteTradeOffer
+const sendBtc = api.sendBtc
 
 export const routes = {
     hello: async req => {
@@ -221,6 +222,20 @@ export const routes = {
             const signedTxnBytes = await signTradeBotTxn(unsignedTxn, store.getState().app.selectedAddress.keyPair)
 
             const res = await processTransaction(signedTxnBytes)
+
+            response = res
+        } catch (e) {
+            console.error(e)
+            console.error(e.message)
+            response = e.message
+        }
+        return response
+    },
+
+    sendBtc: async req => {
+        let response
+        try {
+            const res = await sendBtc(req.data)
 
             response = res
         } catch (e) {
