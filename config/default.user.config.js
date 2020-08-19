@@ -44,7 +44,7 @@ const user = {
     nodeSettings: {
         pingInterval: 10 * 1000 // (10 secs)
     },
-    version: 'v1.2.1', // TODO: Set this dynamically...
+    version: '1.2.1-beta.3', // TODO: Set this dynamically...
     language: 'english', // default...english
     theme: 'light',
     server: {
