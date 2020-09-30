@@ -6,21 +6,13 @@ import { doPageUrl } from '../redux/app/app-actions.js'
 import '@material/mwc-icon'
 import '@material/mwc-button'
 
-// import snackbar from '../functional-components/snackbar.js'
-
 class AppInfo extends connect(store)(LitElement) {
     static get properties() {
         return {
             blockInfo: { type: Object },
             nodeStatus: { type: Object },
             nodeInfo: { type: Object },
-            iconName: { type: String },
-            isLoading: { type: Boolean },
             nodeConfig: { type: Object },
-            nodeTextName: { type: String },
-            slotText: { type: String },
-            cssBtn: { type: String },
-            cssStatus: { type: String },
             pageUrl: { type: String }
         }
     }
@@ -61,9 +53,9 @@ class AppInfo extends connect(store)(LitElement) {
                 #profileInMenu {
                     padding:12px;
                     border-top: 1px solid #eee;
-                    position: fixed;
+                    /* position: fixed;
                     top: 102vh;
-                    left: 0;
+                    left: 0; */
                     /* margin-top: 2.5rem; */
                 }
                 .info {
@@ -97,28 +89,17 @@ class AppInfo extends connect(store)(LitElement) {
         this.blockInfo = {}
         this.nodeInfo = {}
         this.nodeStatus = {}
-        this.iconName = 'compare_arrows'
-        this.isLoading = false
-        this.nodeTextName = 'Main-Net'
-        this.slotText = 'secondaryAction'
-        this.cssBtn = 'normal'
-        this.cssStatus = ''
         this.pageUrl = ''
     }
 
     render() {
         return html`
             <div id="profileInMenu">
-
-                <!-- <div>
-                    <mwc-button slot=${this.slotText} class=${this.cssBtn} ?disabled=${this.isLoading} @click=${() => this.switchNodes()}><mwc-icon>${this.iconName}</mwc-icon>Switch to ${this.nodeTextName}</mwc-button>
-                </div> -->
                 <span class="info">Block Height: ${this.blockInfo.height ? this.blockInfo.height : ''}  <span class=${this.cssStatus}>${this._renderStatus()}</span></span>
                 <span class="info">UI Version: ${this.nodeConfig.version ? this.nodeConfig.version : ''} </span>
                 <span class="info">Core Version: ${this.nodeInfo.buildVersion ? this.nodeInfo.buildVersion : ''} </span>
                 <a id="pageLink"></a>
             </div>
-
         `
     }
 
@@ -143,31 +124,6 @@ class AppInfo extends connect(store)(LitElement) {
             return ''
         }
     }
-
-    // switchNodes() {
-    //     this.isLoading = true
-    //     if (this.nodeConfig.node === 1) {
-    //         this.cssBtn = "test-net"
-    //         store.dispatch(doSetNode(0))
-    //         this.nodeTextName = "Main-Net"
-    //         this.slotText = "primaryAction"
-    //         this.isLoading = false
-    //         snackbar.add({
-    //             labelText: 'Successfully Switched to Test-Net',
-    //             dismiss: true
-    //         })
-    //     } else {
-    //         this.cssBtn = "normal"
-    //         store.dispatch(doSetNode(1))
-    //         this.nodeTextName = "Test-Net"
-    //         this.slotText = "secondaryAction"
-    //         this.isLoading = false
-    //         snackbar.add({
-    //             labelText: 'Successfully Switched to Main-Net',
-    //             dismiss: true
-    //         })
-    //     }
-    // }
 
     gotoPage(url) {
         const myLink = this.shadowRoot.querySelector('#pageLink')

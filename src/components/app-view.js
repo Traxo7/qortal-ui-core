@@ -28,7 +28,7 @@ class AppView extends connect(store)(LitElement) {
         return [
             css`
             :host {
-                --app-drawer-width: 260px;;
+                --app-drawer-width: 260px;
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle]:not(sidenav-menu) {
@@ -46,6 +46,29 @@ class AppView extends connect(store)(LitElement) {
                 background: var(--mdc-theme-surface);
                 color: var(--mdc-theme-on-surface);
             }
+
+            #sideBar {
+                height: 100vh;
+                display: flex;
+                flex: 1 1;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            #sideBar::-webkit-scrollbar {
+                width: 7px;
+                background-color: transparent;
+            }
+
+            #sideBar::-webkit-scrollbar-track {
+                background-color: transparent;
+            }
+
+            #sideBar::-webkit-scrollbar-thumb {
+                background-color: #333;
+                border-radius: 6px;
+                border: 3px solid #333;
+            }
         `
         ]
     }
@@ -58,12 +81,17 @@ class AppView extends connect(store)(LitElement) {
         <app-drawer-layout responsive-width='${getComputedStyle(document.body).getPropertyValue('--layout-breakpoint-desktop')}' fullbleed >
             <app-drawer swipe-open slot="drawer" id="appdrawer">
                 <app-header-layout>
+                    <div id="sideBar">
+                        <div>
+                            <wallet-profile></wallet-profile>
 
-                    <wallet-profile></wallet-profile>
+                            <sidenav-menu></sidenav-menu>
+                        </div>
 
-                    <sidenav-menu drawer-toggle></sidenav-menu>
-
-                    <app-info></app-info>
+                        <div>
+                            <app-info></app-info>
+                        </div>
+                    </div>
                 </app-header-layout>
             </app-drawer>
 

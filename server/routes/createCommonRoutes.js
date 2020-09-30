@@ -51,6 +51,18 @@ const createRoutes = config => [
     },
     {
         method: 'GET',
+        path: '/emoji/{param*}',
+        handler: {
+            directory: {
+                path: path.join(__dirname, '../../emoji/'),
+                redirectToSlash: true,
+                index: true
+            }
+        },
+        options: routesOptions
+    },
+    {
+        method: 'GET',
         path: '/memory-pow/{param*}',
         handler: {
             directory: {

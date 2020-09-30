@@ -76,10 +76,8 @@ class MainApp extends connect(store)(LitElement) {
         this.initial = 0
 
         window.addEventListener('contextmenu', (event) => {
-            event.preventDefault()
-
-            // if (event.target.tagName === 'TEXTAREA')
-            this._textMenu(event)
+            event.preventDefault();
+            this._textMenu(event);
         })
 
         window.addEventListener('click', () => {

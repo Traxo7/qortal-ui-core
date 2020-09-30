@@ -1,6 +1,6 @@
 {
     "name": "qortal-ui-core",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "QORTAL-UI Core",
     "main": "ui-core.js",
     "repository": "https://github.com/Qortal/qortal-ui-core.git",
@@ -40,6 +40,7 @@
         "@polymer/paper-ripple": "^3.0.2",
         "@polymer/paper-spinner": "^3.0.2",
         "@polymer/paper-toast": "^3.0.1",
+        "@vaadin/vaadin-app-layout": "^2.2.0-beta1",
         "asmcrypto.js": "^2.3.2",
         "bcryptjs": "^2.4.3",
         "epml": "^0.3.3",
