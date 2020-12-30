@@ -16,8 +16,9 @@ const tradeBotCreateRequest = api.tradeBotCreateRequest
 const tradeBotRespondRequest = api.tradeBotRespondRequest
 const signTradeBotTxn = api.signTradeBotTxn
 const deleteTradeOffer = api.deleteTradeOffer
+const cancelAllOffers = api.cancelAllOffers
 const sendBtc = api.sendBtc
-const sendLtc = api.sendLtc
+// const sendLtc = api.sendLtc
 
 export const routes = {
     hello: async req => {
@@ -233,6 +234,19 @@ export const routes = {
         return response
     },
 
+    cancelAllOffers: async req => {
+        let response
+        try {
+            const res = await cancelAllOffers(store.getState().app.selectedAddress);
+            response = res
+        } catch (e) {
+            console.error(e)
+            console.error(e.message)
+            response = e.message
+        }
+        return response
+    },
+
     sendBtc: async req => {
         let response
         try {
@@ -246,16 +260,16 @@ export const routes = {
         return response
     },
 
-    sendLtc: async req => {
-        let response
-        try {
-            const res = await sendLtc(req.data)
-            response = res;
-        } catch (e) {
-            console.error(e)
-            console.error(e.message)
-            response = e.message
-        }
-        return response
-    }
+    // sendLtc: async req => {
+    //     let response
+    //     try {
+    //         const res = await sendLtc(req.data)
+    //         response = res;
+    //     } catch (e) {
+    //         console.error(e)
+    //         console.error(e.message)
+    //         response = e.message
+    //     }
+    //     return response
+    // }
 }
