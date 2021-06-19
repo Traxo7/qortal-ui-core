@@ -110,6 +110,10 @@ class LoginView extends connect(store)(LitElement) {
                 }
             
                 .login-page {
+                    background: url("/img/qortal_background_light_.jpg");
+                    background-repeat: no-repeat;
+                    background-attachment: fixed;
+                    background-position: center;
                     height: var(--window-height);
                     width:100vw;
                     max-width:100vw;
@@ -153,7 +157,6 @@ class LoginView extends connect(store)(LitElement) {
                 }
                 .login-card {
                     min-width: 340px;
-                    background: var(--mdc-theme-background);
                     border-bottom: 2px solid var(--mdc-theme-primary);
                     border-top: 2px solid var(--mdc-theme-primary);
                     text-align:center;
@@ -203,9 +206,6 @@ class LoginView extends connect(store)(LitElement) {
                     .qortal-logo {
                         display:none;
                         visibility:hidden;
-                    }
-                    .login-page {
-                        background: var(--mdc-theme-surface);
                     }
                     .login-card{
                         width:100%;
