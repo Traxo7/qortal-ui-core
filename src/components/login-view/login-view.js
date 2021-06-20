@@ -10,13 +10,10 @@ import '@material/mwc-fab'
 import '@polymer/iron-pages'
 import '@polymer/paper-icon-button/paper-icon-button.js'
 
-import './particle.js'
 
 import './welcome-page.js'
 import './create-account-section.js'
 import './login-section.js'
-
-import getParticleConfig from './particle-config.js'
 
 import settings from '../../functional-components/settings-page.js'
 
@@ -67,11 +64,6 @@ class LoginView extends connect(store)(LitElement) {
 
         stateAwait(state => {
             return 'primary' in state.config.styles.theme.colors
-        }).then(() => {
-            const particleDiv = this.shadowRoot.querySelector('#particles-js')
-            const part = new particlesJS(particleDiv, getParticleConfig(this.config), (c) => {
-                //...
-            })
         }).catch(e => console.error(e))
 
         const loginContainerPages = this.shadowRoot.querySelector('#loginContainerPages')
@@ -115,20 +107,13 @@ class LoginView extends connect(store)(LitElement) {
                 canvas {
                     display: block;
                     vertical-align: bottom;
-                } /* ---- particles.js container ---- */
-                #particles-js {
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    z-index:0;
-                    background-color: var(--mdc-theme-background);
-                    background-image: url("");
-                    background-repeat: no-repeat;
-                    background-size: cover;
-                    background-position: 50% 50%;
                 }
             
                 .login-page {
+                    background: url("/img/qortal_background_light_.jpg");
+                    background-repeat: no-repeat;
+                    background-attachment: fixed;
+                    background-position: center;
                     height: var(--window-height);
                     width:100vw;
                     max-width:100vw;
@@ -172,7 +157,6 @@ class LoginView extends connect(store)(LitElement) {
                 }
                 .login-card {
                     min-width: 340px;
-                    background: var(--mdc-theme-background);
                     border-bottom: 2px solid var(--mdc-theme-primary);
                     border-top: 2px solid var(--mdc-theme-primary);
                     text-align:center;
@@ -223,9 +207,6 @@ class LoginView extends connect(store)(LitElement) {
                         display:none;
                         visibility:hidden;
                     }
-                    .login-page {
-                        background: var(--mdc-theme-surface);
-                    }
                     .login-card{
                         width:100%;
                         margin:0;
@@ -275,7 +256,6 @@ class LoginView extends connect(store)(LitElement) {
             </style>
 
             <div class="login-page" ?hidden=${this.loggedIn}>
-                <div id="particles-js"></div>
                 <mwc-fab icon="settings" style="position:fixed; right:24px; bottom:24px;" @click=${() => settings.show()}></mwc-fab>
                 <div class="login-card-container">
                     <img class="qortal-logo" src="${this.config.coin.logo}">
