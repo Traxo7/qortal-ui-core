@@ -4,6 +4,7 @@ import { store } from '../store.js'
 
 import '@material/mwc-icon'
 import '@polymer/paper-ripple'
+import { doLogout } from '../redux/app/actions/login'
 
 class SidenavMenu extends connect(store)(LitElement) {
   static get properties() {
@@ -226,6 +227,12 @@ class SidenavMenu extends connect(store)(LitElement) {
                             </ul>
                         </li>
                     `)}
+                  <li @click=${ e => this.logout(e)}>
+                    <a href="javascript:void(0)">
+                      <mwc-icon>exit_to_app</mwc-icon>
+                      <span>LOGOUT</span>
+                    </a>
+                  </li>
                 </ul>
             </div>
         `
@@ -238,6 +245,12 @@ class SidenavMenu extends connect(store)(LitElement) {
   stateChanged(state) {
     this.config = state.config
     this.urls = state.app.registeredUrls
+  }
+
+  async logout(e) {
+    if(window.confirm('Are you sure you want to logout?')) {
+      store.dispatch(doLogout())
+    }
   }
 }
 

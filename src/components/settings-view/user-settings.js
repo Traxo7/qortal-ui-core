@@ -243,7 +243,6 @@ class UserSettings extends connect(store)(LitElement) {
                                 <li @click=${ () => this.setSettingsView('info')} ><a class=${this.selectedView.id === 'info' ? 'active' : ''} href="javascript:void(0)">Account</a></li>
                                 <li @click=${ () => this.setSettingsView('security')} ><a class=${this.selectedView.id === 'security' ? 'active' : ''} href="javascript:void(0)">Security</a></li>
                                 <li @click=${ () => this.setSettingsView('notification')} ><a class=${this.selectedView.id === 'notification' ? 'active' : ''} href="javascript:void(0)">Notifications</a></li>
-                                <li @click=${ (e) => this.logout(e)}><a style="color: var(--mdc-theme-error);" href="javascript:void(0)">Logout</a></li>
                             </ul>
                         </div>
 
@@ -307,12 +306,6 @@ class UserSettings extends connect(store)(LitElement) {
 
     cleanUp() {
         this.selectedView = { id: 'info', name: 'General Account Info' }
-    }
-
-    async logout(e) {
-
-        store.dispatch(doLogout())
-        this.closeSettings()
     }
 }
 
