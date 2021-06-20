@@ -50,7 +50,7 @@ class SidenavMenu extends connect(store)(LitElement) {
         .mcd-menu li a mwc-icon {  
           float: left;
           margin: 0 10px 0 0;
-          padding-top: 14px;
+          padding-top: 12px;
           padding-right: 9px;
         }
 
