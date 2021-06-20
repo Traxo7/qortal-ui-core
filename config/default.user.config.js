@@ -1,20 +1,32 @@
 const path = require('path')
 
 const user = {
-	// TestNet [0], MainNet [1], other nodes will come in future...
+	// management can be enabled as explicit for public API servers when needed
 	node: 1,
 	knownNodes: [
 		{
 			protocol: 'http',
 			domain: '127.0.0.1',
-			port: 62391,
+			port: 12391,
 			enableManagement: true,
+		},
+		{
+			protocol: 'http',
+			domain: 'node1.qortal.org',
+			port: 12391,
+			enableManagement: false,
+		},
+		{
+			protocol: 'http',
+			domain: 'node2.qortal.org',
+			port: 12391,
+			enableManagement: false,
 		},
 		{
 			protocol: 'http',
 			domain: '127.0.0.1',
-			port: 12391,
-			enableManagement: true,
+			port: 62391,
+			enableManagement: false,
 		},
 		{
 			protocol: 'http',
@@ -24,20 +36,8 @@ const user = {
 		},
 		{
 			protocol: 'http',
-			domain: 'node1.qortal.org',
-			port: 12391,
-			enableManagement: false,
-		},
-		{
-			protocol: 'http',
 			domain: 'node2.qortal.org',
 			port: 62391,
-			enableManagement: false,
-		},
-		{
-			protocol: 'http',
-			domain: 'node2.qortal.org',
-			port: 12391,
 			enableManagement: false,
 		},
 	],
